@@ -78,8 +78,10 @@ public class Philosopher {
 			Socket s = new Socket(ip, SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+			
 			out.writeObject(packet);
 			Response response = (Response) in.readObject();
+			
 			s.close();
 			return response;
 		} catch (ClassNotFoundException | IOException e) {
