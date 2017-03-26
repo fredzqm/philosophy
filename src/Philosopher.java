@@ -11,7 +11,7 @@ import java.util.Scanner;
  * @author fredzqm
  */
 public class Philosopher {
-	public static final int SERVER_PORT = 3838;
+	public static final int SERVER_PORT = 12345;
 
 	private final String left, right;
 	private State state;
@@ -48,7 +48,7 @@ public class Philosopher {
 						ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 						Request packet = (Request) in.readObject();
 
-						String name = client.getInetAddress().getCanonicalHostName();
+						String name = client.getInetAddress().getHostAddress();
 						Response res = state.recieveRequestFrom(Philosopher.this, packet, findServer(name));
 						out.writeObject(res);
 						
