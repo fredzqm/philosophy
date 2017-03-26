@@ -92,21 +92,24 @@ public class Philosopher {
 	public static void main(String[] args) {
 		Philosopher p = new Philosopher(args[0], args[1]);
 		p.startServer();
-
+		
+		p.setState(new TestState());
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			String input = in.nextLine();
-			switch (input) {
-			case "thinking":
-				p.setState(new Thinking());
-				break;
-			case "hungry":
-				p.setState(new Hungry());
-				break;
-			default:
-				System.out.println("Revieved event: " + input);
-				break;
-			}
+			Response resp = p.talkTo(new Request(input), true);
+			System.out.println("Response: " + resp.toString());
+//			switch (input) {
+//			case "thinking":
+//				p.setState(new Thinking());
+//				break;
+//			case "hungry":
+//				p.setState(new Hungry());
+//				break;
+//			default:
+//				System.out.println("Revieved event: " + input);
+//				break;
+//			}
 		}
 	}
 
