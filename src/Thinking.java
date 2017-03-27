@@ -1,4 +1,4 @@
-public class Thinking implements State {
+public class Thinking extends State {
 	private double initTime;
 	private int timeInterval;
 
@@ -22,15 +22,8 @@ public class Thinking implements State {
 	}
 
 	@Override
-	public void tick(Philosopher philosopher, double currentTime) {
-		if (initTime == 0) {
-			initTime = currentTime;
-			return;
-		}
-		double timePassed = currentTime - initTime;
-		if (timePassed > timeInterval) {
-			philosopher.setState(new Hungry());
-		}
+	protected void timeOut(Philosopher philosopher) {
+		philosopher.setState(new Hungry());
 	}
 
 }

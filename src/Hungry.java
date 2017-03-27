@@ -1,12 +1,4 @@
-public class Hungry implements State {
-	private double initTime;
-	private int timeInterval;
-
-	public Hungry() {
-		initTime = 0;
-		timeInterval = this.randomWithRange(10, 10000);
-	}
-
+public class Hungry extends State {
 	@Override
 	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
 		Chopstick chop = philosopher.getChopstick(isLeft);
@@ -47,15 +39,8 @@ public class Hungry implements State {
 	}
 
 	@Override
-	public void tick(Philosopher philosopher, double currentTime) {
-		if (initTime == 0) {
-			initTime = currentTime;
-			return;
-		}
-		double timePassed = currentTime - initTime;
-		if (timePassed > timeInterval) {
-			philosopher.setState(new Dead());
-		}
+	protected void timeOut(Philosopher philosopher) {
+		philosopher.setState(new Dead());		
 	}
-
+	
 }

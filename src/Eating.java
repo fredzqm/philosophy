@@ -1,12 +1,4 @@
-public class Eating implements State {
-	private double initTime;
-	private int timeInterval;
-
-	public Eating() {
-		initTime = 0;
-		timeInterval = this.randomWithRange(10, 10000);
-	}
-
+public class Eating extends State {
 	@Override
 	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
 		return new Response(null);
@@ -20,14 +12,8 @@ public class Eating implements State {
 	}
 
 	@Override
-	public void tick(Philosopher philosopher, double currentTime) {
-		if (initTime == 0) {
-			initTime = currentTime;
-			return;
-		}
-		double timePassed = currentTime - initTime;
-		if (timePassed > timeInterval){
-			philosopher.setState(new Thinking());
-		}
+	protected void timeOut(Philosopher philosopher) {
+		philosopher.setState(new Thinking());
 	}
+
 }

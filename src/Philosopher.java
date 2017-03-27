@@ -13,10 +13,11 @@ import java.util.Scanner;
 public class Philosopher {
 	public static final int SERVER_PORT = 4848;
 	public static boolean verbose = true;
-	public final int timeMultiplyer = 1;
+	public final int TIME_MULTIPLIER = 10;
 	
 	private final String left, right;
 	private final boolean leftFirst;
+	private long timer;
 	private State state;
 	private Chopstick hasLeftChop, hasRightChop;
 
@@ -30,6 +31,7 @@ public class Philosopher {
 
 	public void setState(State state) {
 		this.state = state;
+		this.state.setInitialTime(timer);
 		this.state.switchedTo(this);
 	}
 
@@ -115,12 +117,20 @@ public class Philosopher {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				state.tick(Philosopher.this, System.currentTimeMillis() *  timeMultiplyer);	
+				while (true) {
+					timer++;
+					state.tick(Philosopher.this, timer);
+					try {
+						Thread.sleep(TIME_MULTIPLIER);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}).start();
 	}
 
-	public Response talkTo(Request packet, boolean isLeft) {
+	public Response talkTo(Request packet, boolean isLeft) {	
 		String ip = isLeft ? left : right;
 		try {
 			Socket s = new Socket(ip, SERVER_PORT);

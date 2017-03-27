@@ -1,4 +1,20 @@
-public interface State {
+public abstract class State {
+	protected long initTime;
+	private long timeInterval;
+
+	public State() {
+		initTime = 0;
+		timeInterval = this.randomWithRange(10, 10000);
+	}
+	
+	public void setInitialTime(long time) {
+		this.initTime = time;
+	}
+	
+	private int randomWithRange(int min, int max) {
+		int range = (max - min) + 1;
+		return (int) (Math.random() * range) + min;
+	}
 
 	/**
 	 * 
@@ -7,20 +23,28 @@ public interface State {
 	 * @param isLeft
 	 * @return get a request from a peer
 	 */
-	Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft);
+	abstract Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft);
 
 	/**
 	 * executed whenever the philosopher switch to this state
 	 * 
 	 * @param philosopher
 	 */
-	void switchedTo(Philosopher philosopher);
-	
-	void tick(Philosopher philosopher, double currentTime);
+	abstract void switchedTo(Philosopher philosopher);
 
-	default int randomWithRange(int min, int max) {
-		int range = (max - min) + 1;
-		return (int) (Math.random() * range) + min;
-	}
+	/**
+	 * a hook method to be called if the state is randomly expired
+	 * 
+	 * @param philosopher
+	 */
+	protected void timeOut(Philosopher philosopher) {}
+
 	
+	public void tick(Philosopher philosopher, long currentTime) {
+		if (currentTime - initTime > timeInterval) {
+			timeOut(philosopher);
+		}
+	}
+
+
 }

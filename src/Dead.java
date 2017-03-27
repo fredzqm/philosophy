@@ -1,5 +1,5 @@
 
-public class Dead implements State {
+public class Dead extends State {
 
 	@Override
 	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
@@ -12,12 +12,6 @@ public class Dead implements State {
 		// TODO Auto-generated method stub
 		System.out.println("I am dead");
 
-	}
-
-	@Override
-	public void tick(Philosopher philosopher, double currentTime) {
-		// TODO Auto-generated method stub
-		System.out.println("I am dead");
 	}
 
 }
