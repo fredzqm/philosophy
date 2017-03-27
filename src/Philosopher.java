@@ -12,8 +12,9 @@ import java.util.Scanner;
  */
 public class Philosopher {
 	public static final int SERVER_PORT = 4848;
+	private final int timeMultiplyer = 1;
 	public static boolean verbose = true;
-
+	
 	private final String left, right;
 	private State state;
 	private Chopstick hasLeftChop, hasRightChop;
@@ -102,8 +103,21 @@ public class Philosopher {
 				}
 			}
 		}).start();
+		
+		
 		this.setState(new Thinking());
 	}
+
+	public void startTicking(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Philosopher.this.state.tick(Philosopher.this, (int)System.currentTimeMillis() *  timeMultiplyer);	
+			}
+		}).start();
+	}
+
+
 
 	public Response talkTo(Request packet, boolean isLeft) {
 		String ip = isLeft ? left : right;
@@ -113,6 +127,7 @@ public class Philosopher {
 			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
 			if (verbose)
 				System.out.println("Sending request to " + toStringLeftOrRight(isLeft) + " " + packet);
+
 			out.writeObject(packet);
 			Response response = (Response) in.readObject();
 			if (verbose)
@@ -123,6 +138,12 @@ public class Philosopher {
 		} catch (ClassNotFoundException | IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+
+	public double randomWithRange(double min, double max) {
+		double range = (max - min) + 1;
+		return (double) (Math.random() * range) + min;
 	}
 
 	public static void main(String[] args) {
@@ -145,5 +166,8 @@ public class Philosopher {
 			}
 		}
 	}
+
+	
+	
 
 }
