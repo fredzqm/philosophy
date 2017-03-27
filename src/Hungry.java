@@ -17,12 +17,13 @@ public class Hungry implements State {
 		Chopstick left = philosopher.getChopstick(true);
 		Chopstick right = philosopher.getChopstick(false);
 		if (left == null) {
-			System.out.println("I have left");
 			requestChopstick(philosopher, true);
+			System.out.println("I have left");
 		}
 		if (right == null) {
-			System.out.println("I have right");
+			
 			requestChopstick(philosopher, false);
+			System.out.println("I have right");
 		}
 		philosopher.setState(new Eating());
 	}
