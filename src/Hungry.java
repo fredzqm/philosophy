@@ -6,7 +6,7 @@ public class Hungry implements State {
 		initTime = 0;
 		timeInterval = this.randomWithRange(10, 10000);
 	}
-	
+
 	@Override
 	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
 		Chopstick chop = philosopher.getChopstick(isLeft);
@@ -21,25 +21,20 @@ public class Hungry implements State {
 	@Override
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am hugry");
-		Chopstick left = philosopher.getChopstick(true);
-		Chopstick right = philosopher.getChopstick(false);
-		if (left == null) {
+		if (philosopher.isLeftFirst()) {
 			requestChopstick(philosopher, true);
-			System.out.println("I have left");
-		}
-		if (right == null) {
-			
 			requestChopstick(philosopher, false);
-			System.out.println("I have right");
+		} else {
+			requestChopstick(philosopher, false);
+			requestChopstick(philosopher, true);
 		}
 		philosopher.setState(new Eating());
 	}
 
 	private void requestChopstick(Philosopher philosopher, boolean isLeft) {
-		Response resp = null;
-		Chopstick chopstick = null;
+		Chopstick chopstick = philosopher.getChopstick(isLeft);
 		while (chopstick == null) {
-			resp = philosopher.talkTo(new Request(), isLeft);
+			Response resp = philosopher.talkTo(new Request(), isLeft);
 			chopstick = resp.getChopstick();
 			try {
 				Thread.sleep(5000);
@@ -47,6 +42,7 @@ public class Hungry implements State {
 				e.printStackTrace();
 			}
 		}
+		chopstick.clean();
 		philosopher.setChopstick(chopstick, isLeft);
 	}
 
@@ -57,7 +53,7 @@ public class Hungry implements State {
 			return;
 		}
 		double timePassed = currentTime - initTime;
-		if (timePassed > timeInterval){
+		if (timePassed > timeInterval) {
 			philosopher.setState(new Dead());
 		}
 	}

@@ -16,12 +16,14 @@ public class Philosopher {
 	public final int timeMultiplyer = 1;
 	
 	private final String left, right;
+	private final boolean leftFirst;
 	private State state;
 	private Chopstick hasLeftChop, hasRightChop;
 
 	public Philosopher(String left, String right) {
 		this.left = left;
 		this.right = right;
+		this.leftFirst = left.compareTo(right) > 0;
 		this.hasLeftChop = null;
 		this.hasRightChop = new Chopstick();
 	}
@@ -45,6 +47,10 @@ public class Philosopher {
 			return this.hasRightChop;
 	}
 
+	public boolean isLeftFirst() {
+		return leftFirst;
+	}
+	
 	private static String toStringLeftOrRight(boolean isLeft) {
 		if (isLeft)
 			return "left";
@@ -133,12 +139,6 @@ public class Philosopher {
 		} catch (ClassNotFoundException | IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-
-	public double randomWithRange(double min, double max) {
-		double range = (max - min) + 1;
-		return (double) (Math.random() * range) + min;
 	}
 
 	public static void main(String[] args) {

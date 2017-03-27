@@ -9,7 +9,6 @@ public class Eating implements State {
 
 	@Override
 	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
-
 		return new Response(null);
 	}
 
