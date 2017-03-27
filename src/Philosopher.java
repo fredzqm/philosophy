@@ -66,9 +66,11 @@ public class Philosopher {
 						ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 						ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 						Request packet = (Request) in.readObject();
-
 						String name = client.getInetAddress().getHostAddress();
-						Response res = state.recieveRequestFrom(Philosopher.this, packet, findServer(name));
+						boolean isLeft = findServer(name);
+						System.out.println("Recieving request from " + isLeft + " " + packet);
+						Response res = state.recieveRequestFrom(Philosopher.this, packet, isLeft);
+						System.out.println("Sending response to " + isLeft + " " + res);
 						out.writeObject(res);
 
 						client.close();
@@ -82,7 +84,6 @@ public class Philosopher {
 						if (s != null)
 							s.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -108,11 +109,13 @@ public class Philosopher {
 			Socket s = new Socket(ip, SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-
+			
+			System.out.println("Sending request to " + isLeft + " " + packet);
 			out.writeObject(packet);
 			Response response = (Response) in.readObject();
-
+			System.out.println("Recieving response from " + isLeft + " " + response);
 			s.close();
+			
 			return response;
 		} catch (ClassNotFoundException | IOException e) {
 			throw new RuntimeException(e);
