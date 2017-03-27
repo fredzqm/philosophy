@@ -3,7 +3,7 @@ public class Hungry implements State {
 	@Override
 	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
 		Chopstick chop = philosopher.getChopstick(isLeft);
-		if (chop.isDirty()) {
+		if (chop != null && chop.isDirty()) {
 			philosopher.setChopstick(null, isLeft);
 			return new Response(chop);
 		} else {
