@@ -12,6 +12,7 @@ import java.util.Scanner;
  */
 public class Philosopher {
 	public static final int SERVER_PORT = 4848;
+	public static boolean verbose = true;
 
 	private final String left, right;
 	private State state;
@@ -67,9 +68,11 @@ public class Philosopher {
 						Request packet = (Request) in.readObject();
 						String name = client.getInetAddress().getHostAddress();
 						boolean isLeft = findServer(name);
-						System.out.println("Recieving request from " + toStringLeftOrRight(isLeft) + " " + packet);
+						if (verbose)
+							System.out.println("Recieving request from " + toStringLeftOrRight(isLeft) + " " + packet);
 						Response res = state.recieveRequestFrom(Philosopher.this, packet, isLeft);
-						System.out.println("Sending response to " + toStringLeftOrRight(isLeft) + " " + res);
+						if (verbose)
+							System.out.println("Sending response to " + toStringLeftOrRight(isLeft) + " " + res);
 						out.writeObject(res);
 
 						client.close();
@@ -108,11 +111,12 @@ public class Philosopher {
 			Socket s = new Socket(ip, SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-
-			System.out.println("Sending request to " + toStringLeftOrRight(isLeft) + " " + packet);
+			if (verbose)
+				System.out.println("Sending request to " + toStringLeftOrRight(isLeft) + " " + packet);
 			out.writeObject(packet);
 			Response response = (Response) in.readObject();
-			System.out.println("Recieving response from " + toStringLeftOrRight(isLeft) + " " + response);
+			if (verbose)
+				System.out.println("Recieving response from " + toStringLeftOrRight(isLeft) + " " + response);
 			s.close();
 
 			return response;
