@@ -17,5 +17,10 @@ public class Response implements Serializable {
 	public Chopstick getChopstick() {
 		return chopstick;
 	}
+	
+	@Override
+	public String toString() {
+		return "Reponse: " + chopstick;
+	}
 
 }
