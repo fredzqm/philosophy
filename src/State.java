@@ -15,5 +15,6 @@ public interface State {
 	 * @param philosopher
 	 */
 	void switchedTo(Philosopher philosopher);
-
+	
+	
 }

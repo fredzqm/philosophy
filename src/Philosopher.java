@@ -15,11 +15,27 @@ public class Philosopher {
 
 	private final String left, right;
 	private State state;
+	private Chopstick hasLeftChop, hasRightChop;
+
+	public void setChopstick(Chopstick chopstick, boolean isLeft) {
+		if (isLeft)
+			this.hasLeftChop = chopstick;
+		else
+			this.hasRightChop = chopstick;
+	}
+
+	public Chopstick getChopstick(boolean isLeft) {
+		if (isLeft)
+			return this.hasLeftChop;
+		else
+			return this.hasRightChop;
+	}
 
 	public Philosopher(String left, String right) {
-		this.state = new Thinking();
 		this.left = left;
 		this.right = right;
+		this.hasLeftChop = null;
+		this.hasRightChop = new Chopstick();
 	}
 
 	public void setState(State state) {
@@ -41,7 +57,8 @@ public class Philosopher {
 			public void run() {
 				try {
 					ServerSocket s = new ServerSocket();
-					s.bind(new InetSocketAddress(SERVER_PORT));
+					InetSocketAddress myInet = new InetSocketAddress(SERVER_PORT);
+					s.bind(myInet);
 					while (true) {
 						Socket client = s.accept();
 						ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
@@ -51,7 +68,7 @@ public class Philosopher {
 						String name = client.getInetAddress().getHostAddress();
 						Response res = state.recieveRequestFrom(Philosopher.this, packet, findServer(name));
 						out.writeObject(res);
-						
+
 						client.close();
 					}
 				} catch (IOException | ClassNotFoundException e) {
@@ -70,6 +87,7 @@ public class Philosopher {
 				}
 			}
 		}).start();
+		this.setState(new Thinking());
 	}
 
 	public Response talkTo(Request packet, boolean isLeft) {
@@ -78,10 +96,10 @@ public class Philosopher {
 			Socket s = new Socket(ip, SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-			
+
 			out.writeObject(packet);
 			Response response = (Response) in.readObject();
-			
+
 			s.close();
 			return response;
 		} catch (ClassNotFoundException | IOException e) {
@@ -92,24 +110,21 @@ public class Philosopher {
 	public static void main(String[] args) {
 		Philosopher p = new Philosopher(args[0], args[1]);
 		p.startServer();
-		
-		p.setState(new TestState());
+
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			String input = in.nextLine();
-			Response resp = p.talkTo(new Request(input), true);
-			System.out.println("Response: " + resp.toString());
-//			switch (input) {
-//			case "thinking":
-//				p.setState(new Thinking());
-//				break;
-//			case "hungry":
-//				p.setState(new Hungry());
-//				break;
-//			default:
-//				System.out.println("Revieved event: " + input);
-//				break;
-//			}
+			switch (input) {
+			case "thinking":
+				p.setState(new Thinking());
+				break;
+			case "hungry":
+				p.setState(new Hungry());
+				break;
+			default:
+				System.out.println("Revieved event: " + input);
+				break;
+			}
 		}
 	}
 
