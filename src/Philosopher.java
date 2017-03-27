@@ -17,6 +17,18 @@ public class Philosopher {
 	private State state;
 	private Chopstick hasLeftChop, hasRightChop;
 
+	public Philosopher(String left, String right) {
+		this.left = left;
+		this.right = right;
+		this.hasLeftChop = null;
+		this.hasRightChop = new Chopstick();
+	}
+
+	public void setState(State state) {
+		this.state = state;
+		this.state.switchedTo(this);
+	}
+
 	public void setChopstick(Chopstick chopstick, boolean isLeft) {
 		if (isLeft)
 			this.hasLeftChop = chopstick;
@@ -31,24 +43,11 @@ public class Philosopher {
 			return this.hasRightChop;
 	}
 
-	public Philosopher(String left, String right) {
-		this.left = left;
-		this.right = right;
-		this.hasLeftChop = null;
-		this.hasRightChop = new Chopstick();
-	}
-
-	public void setState(State state) {
-		this.state = state;
-		this.state.switchedTo(this);
-	}
-
-	public String getLeft() {
-		return left;
-	}
-
-	public String getRight() {
-		return right;
+	public String toStringLeftOrRight(boolean isLeft) {
+		if (isLeft)
+			return "left";
+		else
+			return "right";
 	}
 
 	public void startServer() {
@@ -68,9 +67,9 @@ public class Philosopher {
 						Request packet = (Request) in.readObject();
 						String name = client.getInetAddress().getHostAddress();
 						boolean isLeft = findServer(name);
-						System.out.println("Recieving request from " + isLeft + " " + packet);
+						System.out.println("Recieving request from " + toStringLeftOrRight(isLeft) + " " + packet);
 						Response res = state.recieveRequestFrom(Philosopher.this, packet, isLeft);
-						System.out.println("Sending response to " + isLeft + " " + res);
+						System.out.println("Sending response to " + toStringLeftOrRight(isLeft) + " " + res);
 						out.writeObject(res);
 
 						client.close();
@@ -109,13 +108,13 @@ public class Philosopher {
 			Socket s = new Socket(ip, SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-			
-			System.out.println("Sending request to " + isLeft + " " + packet);
+
+			System.out.println("Sending request to " + toStringLeftOrRight(isLeft) + " " + packet);
 			out.writeObject(packet);
 			Response response = (Response) in.readObject();
-			System.out.println("Recieving response from " + isLeft + " " + response);
+			System.out.println("Recieving response from " + toStringLeftOrRight(isLeft) + " " + response);
 			s.close();
-			
+
 			return response;
 		} catch (ClassNotFoundException | IOException e) {
 			throw new RuntimeException(e);

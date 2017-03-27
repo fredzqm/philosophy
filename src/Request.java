@@ -2,7 +2,8 @@ import java.io.Serializable;
 
 public class Request implements Serializable {
 
-	public Request() {	
+	public Request() {
+		
 	}
 
 	/**
@@ -10,4 +11,8 @@ public class Request implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Override
+	public String toString() {
+		return "Request";
+	}
 }
