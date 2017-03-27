@@ -11,7 +11,7 @@ import java.util.Scanner;
  * @author fredzqm
  */
 public class Philosopher {
-	public static final int SERVER_PORT = 12345;
+	public static final int SERVER_PORT = 4848;
 
 	private final String left, right;
 	private State state;
@@ -55,12 +55,14 @@ public class Philosopher {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				ServerSocket s = null;
+				Socket client = null;
 				try {
-					ServerSocket s = new ServerSocket();
+					s = new ServerSocket();
 					InetSocketAddress myInet = new InetSocketAddress(SERVER_PORT);
 					s.bind(myInet);
 					while (true) {
-						Socket client = s.accept();
+						client = s.accept();
 						ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 						ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 						Request packet = (Request) in.readObject();
@@ -73,6 +75,16 @@ public class Philosopher {
 					}
 				} catch (IOException | ClassNotFoundException e) {
 					throw new RuntimeException(e);
+				} finally {
+					try {
+						if (client != null)
+							client.close();
+						if (s != null)
+							s.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 
