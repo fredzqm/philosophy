@@ -8,6 +8,8 @@ public class Eating implements State {
 	@Override
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am eating");
+		philosopher.getChopstick(true).dirty();
+		philosopher.getChopstick(false).dirty();
 	}
 
 }
