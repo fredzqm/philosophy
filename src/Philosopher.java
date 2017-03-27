@@ -12,8 +12,8 @@ import java.util.Scanner;
  */
 public class Philosopher {
 	public static final int SERVER_PORT = 4848;
-	private final int timeMultiplyer = 1;
 	public static boolean verbose = true;
+	public final int timeMultiplyer = 1;
 	
 	private final String left, right;
 	private State state;
@@ -45,7 +45,7 @@ public class Philosopher {
 			return this.hasRightChop;
 	}
 
-	public String toStringLeftOrRight(boolean isLeft) {
+	private static String toStringLeftOrRight(boolean isLeft) {
 		if (isLeft)
 			return "left";
 		else
@@ -104,20 +104,15 @@ public class Philosopher {
 			}
 		}).start();
 		
-		
 		this.setState(new Thinking());
-	}
-
-	public void startTicking(){
+		
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Philosopher.this.state.tick(Philosopher.this, (int)System.currentTimeMillis() *  timeMultiplyer);	
+				state.tick(Philosopher.this, System.currentTimeMillis() *  timeMultiplyer);	
 			}
 		}).start();
 	}
-
-
 
 	public Response talkTo(Request packet, boolean isLeft) {
 		String ip = isLeft ? left : right;

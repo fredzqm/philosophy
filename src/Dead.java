@@ -15,7 +15,7 @@ public class Dead implements State {
 	}
 
 	@Override
-	public void tick(Philosopher philosopher, int currentTime) {
+	public void tick(Philosopher philosopher, double currentTime) {
 		// TODO Auto-generated method stub
 		System.out.println("I am dead");
 	}

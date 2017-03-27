@@ -1,5 +1,5 @@
 public class Hungry implements State {
-	private int initTime;
+	private double initTime;
 	private int timeInterval;
 
 	public Hungry() {
@@ -51,12 +51,12 @@ public class Hungry implements State {
 	}
 
 	@Override
-	public void tick(Philosopher philosopher, int currentTime) {
+	public void tick(Philosopher philosopher, double currentTime) {
 		if (initTime == 0) {
 			initTime = currentTime;
 			return;
 		}
-		int timePassed = currentTime - initTime;
+		double timePassed = currentTime - initTime;
 		if (timePassed > timeInterval){
 			philosopher.setState(new Dead());
 		}

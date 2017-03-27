@@ -16,7 +16,7 @@ public interface State {
 	 */
 	void switchedTo(Philosopher philosopher);
 	
-	void tick(Philosopher philosopher, int currentTime);
+	void tick(Philosopher philosopher, double currentTime);
 
 	default int randomWithRange(int min, int max) {
 		int range = (max - min) + 1;
