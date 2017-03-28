@@ -12,12 +12,18 @@ public class Thinking extends State {
 	@Override
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am thinking");
+		Chopstick l = philosopher.getChopstick(true);
+		Chopstick r = philosopher.getChopstick(false);
 		if (philosopher.isLeftFirst()) {
-			philosopher.getChopstick(false).clean();
-			philosopher.getChopstick(true).clean();
+			if (r != null)
+				r.clean();
+			if (l != null)
+				l.clean();
 		} else {
-			philosopher.getChopstick(true).clean();
-			philosopher.getChopstick(false).clean();
+			if (l != null)
+				l.clean();
+			if (r != null)
+				r.clean();
 		}
 	}
 
