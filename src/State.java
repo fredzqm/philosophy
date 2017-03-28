@@ -4,7 +4,7 @@ public abstract class State {
 
 	public State() {
 		initTime = 0;
-		timeInterval = this.randomWithRange(10, 10000);
+		timeInterval = 500;
 	}
 	
 	public void setInitialTime(long time) {
