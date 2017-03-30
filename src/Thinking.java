@@ -10,7 +10,7 @@ public class Thinking extends State {
 	@Override
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am thinking");
-		setTimeOutInterval((long) Math.random() * 100 + 100);
+		setTimeOutInterval((long) Math.random() * 100 + 200);
 		
 		Chopstick l = philosopher.getChopstick(true);
 		Chopstick r = philosopher.getChopstick(false);
