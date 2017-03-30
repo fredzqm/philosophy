@@ -1,7 +1,5 @@
 public class Thinking extends State {
-	private double initTime;
-	private int timeInterval;
-
+	
 	@Override
 	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
 		Chopstick chopstick = philosopher.getChopstick(isLeft);
@@ -12,6 +10,8 @@ public class Thinking extends State {
 	@Override
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am thinking");
+		setTimeOutInterval((long) Math.random() * 100 + 100);
+		
 		Chopstick l = philosopher.getChopstick(true);
 		Chopstick r = philosopher.getChopstick(false);
 		if (philosopher.isLeftFirst()) {

@@ -6,6 +6,8 @@ public class Eating extends State {
 
 	@Override
 	public void switchedTo(Philosopher philosopher) {
+		setTimeOutInterval((long) Math.random() * 100 + 100);
+		
 		System.out.println("I am eating");
 		philosopher.getChopstick(true).dirty();
 		philosopher.getChopstick(false).dirty();

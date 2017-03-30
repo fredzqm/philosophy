@@ -4,16 +4,15 @@ public abstract class State {
 
 	public State() {
 		initTime = 0;
-		timeInterval = 500;
 	}
-	
+
 	public void setInitialTime(long time) {
 		this.initTime = time;
 	}
 	
-	private int randomWithRange(int min, int max) {
-		int range = (max - min) + 1;
-		return (int) (Math.random() * range) + min;
+	protected void setTimeOutInterval(long timeInterval) {
+		this.initTime = Timer.getTime();
+		this.timeInterval = timeInterval;
 	}
 
 	/**
@@ -37,14 +36,14 @@ public abstract class State {
 	 * 
 	 * @param philosopher
 	 */
-	protected void timeOut(Philosopher philosopher) {}
-
-	
-	public void tick(Philosopher philosopher, long currentTime) {
-		if (currentTime - initTime > timeInterval) {
-			timeOut(philosopher);
-		}
+	protected void timeOut(Philosopher philosopher) {
 	}
 
+	public void tick(Philosopher philosopher, long currentTime) {
+		if (currentTime - initTime > timeInterval) {
+			if (Philosopher.automate)
+				timeOut(philosopher);
+		}
+	}
 
 }
