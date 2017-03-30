@@ -13,8 +13,7 @@ public class Timer {
 	public static void registerListener(Listener listener) {
 		ls.add(listener);
 	}
-	
-	
+
 	static {
 		ls = new ArrayList<>();
 		new Thread(new Runnable() {
@@ -23,6 +22,9 @@ public class Timer {
 				while (true) {
 					timer++;
 					try {
+						for (Listener l : ls) {
+							l.tick(timer);
+						}
 						Thread.sleep(TIME_MULTIPLIER);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
