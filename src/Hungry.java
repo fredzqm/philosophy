@@ -13,8 +13,11 @@ public class Hungry extends State {
 	@Override
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am hugry");
-		setTimeOutInterval(1000);
-		
+		Timer.setTimeOut(1000, () -> {
+			if (philosopher.getState() == this)
+				philosopher.setState(new Hungry());
+		});
+
 		if (philosopher.isLeftFirst()) {
 			requestChopstick(philosopher, true);
 			requestChopstick(philosopher, false);
@@ -38,11 +41,6 @@ public class Hungry extends State {
 		}
 		chopstick.clean();
 		philosopher.setChopstick(chopstick, isLeft);
-	}
-
-	@Override
-	protected void timeOut(Philosopher philosopher) {
-		philosopher.setState(new Dead());
 	}
 
 }

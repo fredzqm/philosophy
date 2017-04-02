@@ -10,11 +10,11 @@ import java.util.Scanner;
  * 
  * @author fredzqm
  */
-public class Philosopher implements Listener {
+public class Philosopher {
 	public static final int SERVER_PORT = 4848;
 	public static boolean verbose = true;
 	public static boolean automate = true;
-	
+
 	private final String left, right;
 	private final boolean leftFirst;
 	private State state;
@@ -25,13 +25,17 @@ public class Philosopher implements Listener {
 		this.right = right;
 		this.leftFirst = left.compareTo(right) > 0;
 		this.hasLeftChop = null;
+
 		this.hasRightChop = new Chopstick();
 	}
 
 	public void setState(State state) {
 		this.state = state;
-		this.state.setInitialTime(Timer.getTime());
 		this.state.switchedTo(this);
+	}
+
+	public State getState() {
+		return state;
 	}
 
 	public void setChopstick(Chopstick chopstick, boolean isLeft) {
@@ -50,11 +54,6 @@ public class Philosopher implements Listener {
 
 	public boolean isLeftFirst() {
 		return leftFirst;
-	}
-	
-	@Override
-	public void tick(long currentTime) {
-		state.tick(this, currentTime);
 	}
 
 	private static String toStringLeftOrRight(boolean isLeft) {
@@ -115,11 +114,10 @@ public class Philosopher implements Listener {
 				}
 			}
 		}).start();
-		Timer.registerListener(this);
 		this.setState(new Thinking());
 	}
 
-	public Response talkTo(Request packet, boolean isLeft) {	
+	public Response talkTo(Request packet, boolean isLeft) {
 		String ip = isLeft ? left : right;
 		try {
 			Socket s = new Socket(ip, SERVER_PORT);
@@ -160,8 +158,5 @@ public class Philosopher implements Listener {
 			}
 		}
 	}
-
-	
-	
 
 }

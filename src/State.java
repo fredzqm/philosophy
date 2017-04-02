@@ -1,20 +1,4 @@
 public abstract class State {
-	protected long initTime;
-	private long timeInterval;
-
-	public State() {
-		initTime = 0;
-	}
-
-	public void setInitialTime(long time) {
-		this.initTime = time;
-	}
-	
-	protected void setTimeOutInterval(long timeInterval) {
-		this.initTime = Timer.getTime();
-		this.timeInterval = timeInterval;
-	}
-
 	/**
 	 * 
 	 * @param philosopher
@@ -30,20 +14,5 @@ public abstract class State {
 	 * @param philosopher
 	 */
 	abstract void switchedTo(Philosopher philosopher);
-
-	/**
-	 * a hook method to be called if the state is randomly expired
-	 * 
-	 * @param philosopher
-	 */
-	protected void timeOut(Philosopher philosopher) {
-	}
-
-	public void tick(Philosopher philosopher, long currentTime) {
-		if (currentTime - initTime > timeInterval) {
-			if (Philosopher.automate)
-				timeOut(philosopher);
-		}
-	}
 
 }
