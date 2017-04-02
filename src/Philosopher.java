@@ -31,6 +31,7 @@ public class Philosopher {
 
 	public void setState(State state) {
 		this.state = state;
+		this.state.switchedTo(this);
 	}
 
 	public State getState() {
