@@ -72,7 +72,7 @@ public class BottleManager {
 			Timer.setTimeOut(300, 1000, () -> {
 				if (getDrinkState() == this) {
 					setDrinkState(new NotThirsty());
-					sendBottle(Philosopher.get().getRight());
+					sendBottle(Philosopher.getRight());
 				}
 			});
 		}
@@ -102,8 +102,8 @@ public class BottleManager {
 			Timer.setTimeOut(1000, () -> {
 				if (getDrinkState() == this) {
 					angry = true;
-					Philosopher.get().getLeft().talkTo(new Message.BottleSearch(NUM_OF_NODE));
-					Philosopher.get().getRight().talkTo(new Message.BottleSearch(NUM_OF_NODE));
+					Philosopher.getLeft().talkTo(new Message.BottleSearch(NUM_OF_NODE));
+					Philosopher.getRight().talkTo(new Message.BottleSearch(NUM_OF_NODE));
 					Timer.setTimeOut(10, () -> {
 						if (angry) {
 							System.out.print("I am angry and ");

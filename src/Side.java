@@ -17,8 +17,8 @@ public class Side {
 
 	public Side getTheOtherSide() {
 		if (isLeft)
-			return Philosopher.get().getRight();
-		return Philosopher.get().getLeft();
+			return Philosopher.getRight();
+		return Philosopher.getLeft();
 	}
 
 	public void talkTo(Message packet) {

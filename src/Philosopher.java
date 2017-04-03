@@ -13,37 +13,20 @@ public class Philosopher {
 	public static final int SERVER_PORT = 4848;
 	public static boolean verbose = true;
 	public static boolean automate = true;
-	private static Philosopher philosopher;
 	
-	
-	private final Side left, right;
-	private State foodState;
-	private BottleManager bottleManager;
-	
-	private Philosopher(String left, String right) {
-		this.left = new Side(left, true);
-		this.right = new Side(right, false);
-		bottleManager = new BottleManager();
-	}
+	private static Side left, right;
+	private static FoodManager foodManager;
+	private static BottleManager bottleManager;
 
-	public void setFoodState(State state) {
-		this.foodState = state;
-		this.foodState.onStart();
-	}
-
-	public State getState() {
-		return foodState;
-	}
-
-	public Side getRight() {
+	public static Side getRight() {
 		return right;
 	}
 
-	public Side getLeft() {
+	public static Side getLeft() {
 		return left;
 	}
 
-	public void startServer() {
+	public static void startServer() {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -62,8 +45,7 @@ public class Philosopher {
 						if (verbose) {
 							System.out.println("Recieving request from " + neighbor + " " + packet);
 						}
-						foodState.recieveMessageFrom(packet, neighbor);
-						bottleManager.recieveMessageFrom(packet, neighbor);
+						recieveMessageFrom(packet, neighbor);
 						client.close();
 					}
 				} catch (IOException | ClassNotFoundException e) {
@@ -91,31 +73,32 @@ public class Philosopher {
 				}
 			}
 		}).start();
-		this.setFoodState(new Thinking());
 	}
-
-	public static Philosopher get() {
-		return philosopher;
-	}
-
-	public static BottleManager getDrinkingManager() {
-		return philosopher.bottleManager;
+	
+	private static void recieveMessageFrom(Message packet, Side neighbor) {
+		foodManager.recieveMessageFrom(packet, neighbor);
+		bottleManager.recieveMessageFrom(packet, neighbor);
 	}
 
 	public static void main(String[] args) {
-		philosopher = new Philosopher(args[0], args[1]);
-		philosopher.startServer();
-
+		left = new Side(args[0], true);
+		right = new Side(args[1], false);
+		
+		foodManager = new FoodManager();
+		bottleManager = new BottleManager();
+		
+		startServer();
+		
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			String input = in.nextLine();
 			switch (input) {
 			case "thinking":
-				philosopher.setFoodState(new Thinking());
+				foodManager.setFoodState(foodManager.new Thinking());
 				break;
 			case "hungry":
-				philosopher.setFoodState(new Hungry());
+				foodManager.setFoodState(foodManager.new Hungry());
 				break;
 			default:
 				System.out.println("Revieved event: " + input);

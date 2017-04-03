@@ -9,30 +9,20 @@ public class Timer {
 		return timer;
 	}
 
-	public static void setTimeOut(int min, int max, State state, Runnable callback) {
-		setTimeOut((int) (Math.random() * (max - min)) + min, state, callback);
-	}
-
 	public static void setTimeOut(int min, int max, Runnable callback) {
-		setTimeOut((int) (Math.random() * (max - min)) + min, null, callback);
+		setTimeOut((int) (Math.random() * (max - min)) + min, callback);
 	}
 
 	public static void setTimeOut(int timeOut, Runnable callback) {
-		setTimeOut(timeOut, null, callback);
-	}
-
-	public static void setTimeOut(int time, State state, Runnable callback) {
-		timeOuts.add(new TimeOutEvent(time, state, callback));
+		timeOuts.add(new TimeOutEvent(timeOut, callback));
 	}
 
 	public static class TimeOutEvent implements Comparable<TimeOutEvent>, Runnable {
 		private int triggetTime;
-		private State state;
 		private Runnable callback;
 
-		public TimeOutEvent(int timeLeft, State state, Runnable callback) {
+		public TimeOutEvent(int timeLeft, Runnable callback) {
 			this.triggetTime = timeLeft + getTime();
-			this.state = state;
 			this.callback = callback;
 		}
 
@@ -47,8 +37,7 @@ public class Timer {
 
 		@Override
 		public void run() {
-			if (state == null || state == Philosopher.get().getState())
-				callback.run();
+			callback.run();
 		}
 	}
 
