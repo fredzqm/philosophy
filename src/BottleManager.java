@@ -60,6 +60,7 @@ public class BottleManager {
 
 		@Override
 		public void onStart() {
+			System.out.println("I am drinking");
 			Timer.setTimeOut(300, 1000, () -> {
 				if (getDrinkState() == this) {
 					setDrinkState(new NotThirsty());
@@ -85,12 +86,14 @@ public class BottleManager {
 
 		@Override
 		public void onStart() {
+			System.out.println("I am thirsty");
 			Timer.setTimeOut(1000, () -> {
 				getAngry();
 			});
 		}
 
 		private void getAngry() {
+			System.out.println("I am angry");
 			if (getDrinkState() == this) {
 				angry = true;
 				Philosopher.get().getLeft().talkTo(new Message.BottleSearch());
@@ -123,6 +126,7 @@ public class BottleManager {
 
 		@Override
 		public void onStart() {
+			System.out.println("I am not thirsty");
 			Timer.setTimeOut(300, 1000, () -> {
 				if (getDrinkState() == this) {
 					setDrinkState(new Thirsty());

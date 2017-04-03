@@ -30,7 +30,7 @@ public class Hungry implements State {
 	public void onStart() {
 		System.out.println("I am hungry");
 		has = new HashSet<>();
-		Timer.setTimeOut(10000, this, () -> {
+		Timer.setTimeOut(50000, this, () -> {
 			Philosopher.get().setFoodState(new Dead());
 		});
 		Philosopher.get().getRight().talkTo(new Message.ChopstickReqest());
