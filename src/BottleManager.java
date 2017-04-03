@@ -1,4 +1,7 @@
+
 public class BottleManager {
+	public final int NUM_OF_NODE = 4;
+
 	public boolean hasBottle = false;
 	private static final int TIME_OUT = 100;
 	private DrinkState drinkState;
@@ -24,13 +27,18 @@ public class BottleManager {
 		} else if (packet instanceof Message.ACKBottle) {
 			hasBottle = false;
 		} else if (packet instanceof Message.BottleSearch) {
-			if (hasBottle || drinkState.hasBottle())
-				neighbor.talkTo(new Message.BottleHere());
+			int ttl = ((Message.BottleSearch) packet).getTTL() - 1;
+			if (hasBottle || drinkState.hasBottle()) {
+				neighbor.talkTo(new Message.BottleHere(NUM_OF_NODE));
+			} else if (ttl != 0)
+				neighbor.getTheOtherSide().talkTo(new Message.BottleSearch(ttl));
 		} else if (packet instanceof Message.BottleHere) {
+			int ttl = ((Message.BottleHere) packet).getTTL() - 1;
 			if (drinkState instanceof Thirsty) {
-				((Thirsty)drinkState).angry = false;
+				((Thirsty) drinkState).angry = false;
 			}
-			neighbor.getTheOtherSide().talkTo(new Message.BottleHere());
+			if (ttl != 0)
+				neighbor.getTheOtherSide().talkTo(new Message.BottleHere(ttl));
 		}
 	}
 
@@ -96,8 +104,8 @@ public class BottleManager {
 			System.out.println("I am angry");
 			if (getDrinkState() == this) {
 				angry = true;
-				Philosopher.get().getLeft().talkTo(new Message.BottleSearch());
-				Philosopher.get().getRight().talkTo(new Message.BottleSearch());
+				Philosopher.get().getLeft().talkTo(new Message.BottleSearch(NUM_OF_NODE));
+				Philosopher.get().getRight().talkTo(new Message.BottleSearch(NUM_OF_NODE));
 				Timer.setTimeOut(10, () -> {
 					if (angry) {
 						setDrinkState(new Drinking());

@@ -31,9 +31,27 @@ public class Message implements Serializable {
 
 	public static class BottleSearch extends Message {
 		private static final long serialVersionUID = 1L;
+		private int ttl;
+		
+		public BottleSearch(int ttl) {
+			this.ttl = ttl;
+		}
+
+		public int getTTL() {
+			return ttl;
+		}
 	}
 
 	public static class BottleHere extends Message {
 		private static final long serialVersionUID = 1L;
+		private int ttl;
+		
+		public BottleHere(int ttl) {
+			this.ttl = ttl;
+		}
+
+		public int getTTL() {
+			return ttl;
+		}
 	}
 }
