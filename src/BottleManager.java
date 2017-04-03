@@ -19,35 +19,69 @@ public class BottleManager {
 	}
 
 	public void recieveMessageFrom(Message packet, Side neighbor) {
-		if (packet instanceof Message.Bottle) {
-			neighbor.talkTo(new Message.ACKBottle());
+		if (packet instanceof Bottle) {
+			neighbor.talkTo(new ACKBottle());
 			hasBottle = true;
 			drinkState.getBottle(neighbor);
-		} else if (packet instanceof Message.ACKBottle) {
+		} else if (packet instanceof ACKBottle) {
 			hasBottle = false;
-		} else if (packet instanceof Message.BottleSearch) {
-			int ttl = ((Message.BottleSearch) packet).getTTL() - 1;
+		} else if (packet instanceof BottleSearch) {
+			int ttl = ((BottleSearch) packet).getTTL() - 1;
 			if (hasBottle || drinkState.hasBottle()) {
-				neighbor.talkTo(new Message.BottleHere(NUM_OF_NODE));
+				neighbor.talkTo(new BottleHere(NUM_OF_NODE));
 			} else if (ttl != 0)
-				neighbor.getTheOtherSide().talkTo(new Message.BottleSearch(ttl));
-		} else if (packet instanceof Message.BottleHere) {
-			int ttl = ((Message.BottleHere) packet).getTTL() - 1;
+				neighbor.getTheOtherSide().talkTo(new BottleSearch(ttl));
+		} else if (packet instanceof BottleHere) {
+			int ttl = ((BottleHere) packet).getTTL() - 1;
 			if (drinkState instanceof Thirsty) {
 				((Thirsty) drinkState).angry = false;
 			}
 			if (ttl != 0)
-				neighbor.getTheOtherSide().talkTo(new Message.BottleHere(ttl));
+				neighbor.getTheOtherSide().talkTo(new BottleHere(ttl));
 		}
 	}
 
 	private void sendBottle(Side side) {
-		side.talkTo(new Message.Bottle());
+		side.talkTo(new Bottle());
 		hasBottle = true;
 		Timer.setTimeOut(TIME_OUT, () -> {
 			if (hasBottle)
 				drinkState.getBottle(side.getTheOtherSide());
 		});
+	}
+
+	public static class Bottle extends Message {
+		private static final long serialVersionUID = 1L;
+	}
+
+	public static class ACKBottle extends Message {
+		private static final long serialVersionUID = 1L;
+	}
+
+	public static class BottleSearch extends Message {
+		private static final long serialVersionUID = 1L;
+		private int ttl;
+
+		public BottleSearch(int ttl) {
+			this.ttl = ttl;
+		}
+
+		public int getTTL() {
+			return ttl;
+		}
+	}
+
+	public static class BottleHere extends Message {
+		private static final long serialVersionUID = 1L;
+		private int ttl;
+
+		public BottleHere(int ttl) {
+			this.ttl = ttl;
+		}
+
+		public int getTTL() {
+			return ttl;
+		}
 	}
 
 	public interface DrinkState {
@@ -101,8 +135,8 @@ public class BottleManager {
 			Timer.setTimeOut(1000, () -> {
 				if (getDrinkState() == this) {
 					angry = true;
-					Philosopher.getLeft().talkTo(new Message.BottleSearch(NUM_OF_NODE));
-					Philosopher.getRight().talkTo(new Message.BottleSearch(NUM_OF_NODE));
+					Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
+					Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
 					Timer.setTimeOut(10, () -> {
 						if (angry) {
 							System.out.print("I am angry and ");

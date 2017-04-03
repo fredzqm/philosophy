@@ -17,6 +17,22 @@ public class FoodManager {
 		this.foodState.recieveMessageFrom(packet, neighbor);
 	}
 
+	public static class ChopstickReqest extends Message {
+		private static final long serialVersionUID = 1L;
+	}
+
+	public static class ChopstickResponse extends Message {
+		private static final long serialVersionUID = 1L;
+		private final boolean isAvailable;
+
+		public ChopstickResponse(boolean available) {
+			this.isAvailable = available;
+		}
+
+		public boolean isAvailable() {
+			return isAvailable;
+		}
+	}
 	
 	public interface State {
 		/**
@@ -40,8 +56,8 @@ public class FoodManager {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
-			if (packet instanceof Message.ChopstickReqest) {
-				neighbor.talkTo(new Message.ChopstickResponse(false));
+			if (packet instanceof  ChopstickReqest) {
+				neighbor.talkTo(new  ChopstickResponse(false));
 			}
 		}
 
@@ -59,8 +75,8 @@ public class FoodManager {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
-			if (packet instanceof Message.ChopstickReqest) {
-				neighbor.talkTo(new Message.ChopstickResponse(true));
+			if (packet instanceof  ChopstickReqest) {
+				neighbor.talkTo(new  ChopstickResponse(true));
 			}
 		}
 
@@ -81,16 +97,16 @@ public class FoodManager {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
-			if (packet instanceof Message.ChopstickReqest) {
+			if (packet instanceof  ChopstickReqest) {
 				if (Math.random() > 0.5) {
-					neighbor.talkTo(new Message.ChopstickResponse(false));
+					neighbor.talkTo(new  ChopstickResponse(false));
 					has.add(neighbor.isLeft());
 				} else {
-					neighbor.talkTo(new Message.ChopstickResponse(true));
+					neighbor.talkTo(new  ChopstickResponse(true));
 					has.remove(neighbor.isLeft());
 				}
-			} else if (packet instanceof Message.ChopstickResponse) {
-				Message.ChopstickResponse resp = (Message.ChopstickResponse) packet;
+			} else if (packet instanceof  ChopstickResponse) {
+				 ChopstickResponse resp = ( ChopstickResponse) packet;
 				if (resp.isAvailable()) {
 					has.add(neighbor.isLeft());
 				}
@@ -107,8 +123,8 @@ public class FoodManager {
 				if (foodState != this)
 					setFoodState(new Dead());
 			});
-			Philosopher.getRight().talkTo(new Message.ChopstickReqest());
-			Philosopher.getLeft().talkTo(new Message.ChopstickReqest());
+			Philosopher.getRight().talkTo(new  ChopstickReqest());
+			Philosopher.getLeft().talkTo(new  ChopstickReqest());
 
 			setUpCheckTimer();
 		}
@@ -117,9 +133,9 @@ public class FoodManager {
 			Timer.setTimeOut(REPEAT_TIME, () -> {
 				if (foodState != this) {
 					if (!has.contains(false))
-						Philosopher.getRight().talkTo(new Message.ChopstickReqest());
+						Philosopher.getRight().talkTo(new  ChopstickReqest());
 					if (!has.contains(true))
-						Philosopher.getLeft().talkTo(new Message.ChopstickReqest());
+						Philosopher.getLeft().talkTo(new ChopstickReqest());
 					setUpCheckTimer();
 				}
 			});
