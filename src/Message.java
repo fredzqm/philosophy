@@ -1,8 +1,8 @@
 import java.io.Serializable;
 
-public class Request implements Serializable {
+public class Message implements Serializable {
 
-	public Request() {
+	public Message() {
 		
 	}
 

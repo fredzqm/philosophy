@@ -6,7 +6,7 @@ public abstract class State {
 	 * @param isLeft
 	 * @return get a request from a peer
 	 */
-	abstract Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft);
+	abstract void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft);
 
 	/**
 	 * executed whenever the philosopher switch to this state

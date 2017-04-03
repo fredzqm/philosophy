@@ -2,8 +2,8 @@
 public class Dead extends State {
 
 	@Override
-	public Response recieveRequestFrom(Philosopher philosopher, Request packet, boolean isLeft) {
-		return new Response(philosopher.getChopstick(isLeft));
+	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
+//		return new Response(philosopher.getChopstick(isLeft));
 	}
 
 	@Override
