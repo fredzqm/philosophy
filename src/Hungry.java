@@ -3,9 +3,9 @@ import java.util.Set;
 
 public class Hungry extends State {
 	private final int REPEAT_TIME = 10;
-
 	private Set<Boolean> has;
-
+	private Runnable check;
+	
 	@Override
 	void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
 		if (packet instanceof Message.ChopstickReqest) {
@@ -20,11 +20,6 @@ public class Hungry extends State {
 			Message.ChopstickResponse resp = (Message.ChopstickResponse) packet;
 			if (resp.isAvailable()) {
 				has.add(neighbor.isLeft());
-			} else {
-				Timer.setTimeOut(REPEAT_TIME, () -> {
-					if (philosopher.getState() == this)
-						neighbor.talkTo(new Message.ChopstickReqest());
-				});
 			}
 		}
 		if (has.size() == 2)
@@ -35,14 +30,24 @@ public class Hungry extends State {
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am hugry");
 		has = new HashSet<>();
-
 		Timer.setTimeOut(10000, () -> {
 			if (philosopher.getState() == this)
 				philosopher.setState(new Dead());
 		});
-
 		philosopher.getRight().talkTo(new Message.ChopstickReqest());
 		philosopher.getLeft().talkTo(new Message.ChopstickReqest());
+		
+		check = () -> {
+			if (philosopher.getState() == this) {
+				if (!has.contains(false))
+					philosopher.getRight().talkTo(new Message.ChopstickReqest());
+				if (!has.contains(true))
+					philosopher.getLeft().talkTo(new Message.ChopstickReqest());
+				Timer.setTimeOut(REPEAT_TIME, check);
+			}
+		};
+		Timer.setTimeOut(REPEAT_TIME, check);
 	}
+	
 
 }
