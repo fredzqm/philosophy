@@ -1,5 +1,3 @@
-import javax.naming.directory.DirContext;
-
 public class BottleManager {
 	public boolean hasBottle = false;
 	private static final int TIME_OUT = 100;
@@ -97,7 +95,7 @@ public class BottleManager {
 				angry = true;
 				Philosopher.get().getLeft().talkTo(new Message.BottleSearch());
 				Philosopher.get().getRight().talkTo(new Message.BottleSearch());
-				Timer.setTimeOut(10, () -> {angry
+				Timer.setTimeOut(10, () -> {
 					if (angry) {
 						setDrinkState(new Drinking());
 					} else {
