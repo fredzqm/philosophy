@@ -33,7 +33,7 @@ public class FoodManager implements MessageReciever {
 			return isAvailable;
 		}
 	}
-	
+
 	public interface State {
 		/**
 		 * 
@@ -51,13 +51,12 @@ public class FoodManager implements MessageReciever {
 		void onStart();
 	}
 
-	
 	public class Eating implements State {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
-			if (packet instanceof  ChopstickReqest) {
-				neighbor.talkTo(new  ChopstickResponse(false));
+			if (packet instanceof ChopstickReqest) {
+				neighbor.talkTo(new ChopstickResponse(false));
 			}
 		}
 
@@ -65,7 +64,7 @@ public class FoodManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am eating");
 			Timer.setTimeOut(1000, 2000, () -> {
-				if (foodState != this)
+				if (foodState == this)
 					setFoodState(new Thinking());
 			});
 		}
@@ -75,8 +74,8 @@ public class FoodManager implements MessageReciever {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
-			if (packet instanceof  ChopstickReqest) {
-				neighbor.talkTo(new  ChopstickResponse(true));
+			if (packet instanceof ChopstickReqest) {
+				neighbor.talkTo(new ChopstickResponse(true));
 			}
 		}
 
@@ -84,7 +83,7 @@ public class FoodManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am thinking");
 			Timer.setTimeOut(1000, 3000, () -> {
-				if (foodState != this)
+				if (foodState == this)
 					setFoodState(new Hungry());
 			});
 		}
@@ -97,16 +96,16 @@ public class FoodManager implements MessageReciever {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
-			if (packet instanceof  ChopstickReqest) {
+			if (packet instanceof ChopstickReqest) {
 				if (Math.random() > 0.5) {
-					neighbor.talkTo(new  ChopstickResponse(false));
+					neighbor.talkTo(new ChopstickResponse(false));
 					has.add(neighbor.isLeft());
 				} else {
-					neighbor.talkTo(new  ChopstickResponse(true));
+					neighbor.talkTo(new ChopstickResponse(true));
 					has.remove(neighbor.isLeft());
 				}
-			} else if (packet instanceof  ChopstickResponse) {
-				 ChopstickResponse resp = ( ChopstickResponse) packet;
+			} else if (packet instanceof ChopstickResponse) {
+				ChopstickResponse resp = (ChopstickResponse) packet;
 				if (resp.isAvailable()) {
 					has.add(neighbor.isLeft());
 				}
@@ -120,20 +119,20 @@ public class FoodManager implements MessageReciever {
 			System.out.println("I am hungry");
 			has = new HashSet<>();
 			Timer.setTimeOut(50000, () -> {
-				if (foodState != this)
+				if (foodState == this)
 					setFoodState(new Dead());
 			});
-			Philosopher.getRight().talkTo(new  ChopstickReqest());
-			Philosopher.getLeft().talkTo(new  ChopstickReqest());
+			Philosopher.getRight().talkTo(new ChopstickReqest());
+			Philosopher.getLeft().talkTo(new ChopstickReqest());
 
 			setUpCheckTimer();
 		}
 
 		private void setUpCheckTimer() {
 			Timer.setTimeOut(REPEAT_TIME, () -> {
-				if (foodState != this) {
+				if (foodState == this) {
 					if (!has.contains(false))
-						Philosopher.getRight().talkTo(new  ChopstickReqest());
+						Philosopher.getRight().talkTo(new ChopstickReqest());
 					if (!has.contains(true))
 						Philosopher.getLeft().talkTo(new ChopstickReqest());
 					setUpCheckTimer();
@@ -144,7 +143,6 @@ public class FoodManager implements MessageReciever {
 	}
 
 	public class Sleep implements State {
-
 		@Override
 		public void recieveMessageFrom(Message packet, Side isLeft) {
 
@@ -154,11 +152,10 @@ public class FoodManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am sleeping");
 			Timer.setTimeOut(0, 1000, () -> {
-				if (foodState != this)
+				if (foodState == this)
 					setFoodState(new Thinking());
 			});
 		}
-
 	}
 
 	public class Dead implements State {

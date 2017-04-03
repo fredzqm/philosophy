@@ -47,11 +47,11 @@ public class Timer {
 			@Override
 			public void run() {
 				while (true) {
-					timer++;
 					while (!timeOuts.isEmpty() && timeOuts.peek().timeLeft() == 0) {
 						TimeOutEvent next = timeOuts.poll();
 						next.run();
 					}
+					timer++;
 					try {
 						Thread.sleep(TIME_MULTIPLIER);
 					} catch (InterruptedException e) {

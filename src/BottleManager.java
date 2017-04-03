@@ -1,5 +1,6 @@
+
 public class BottleManager implements MessageReciever {
-	public final int NUM_OF_NODE = 4;
+	public final int NUM_OF_NODE = 5;
 
 	public boolean hasBottle = false;
 	private static final int TIME_OUT = 100;
@@ -27,14 +28,14 @@ public class BottleManager implements MessageReciever {
 			hasBottle = false;
 		} else if (packet instanceof BottleSearch) {
 			int ttl = ((BottleSearch) packet).getTTL() - 1;
-			if (hasBottle || drinkState.hasBottle()) {
+			if (hasBottle || drinkState instanceof Drinking) {
 				neighbor.talkTo(new BottleHere(NUM_OF_NODE));
 			} else if (ttl != 0)
 				neighbor.getTheOtherSide().talkTo(new BottleSearch(ttl));
 		} else if (packet instanceof BottleHere) {
 			int ttl = ((BottleHere) packet).getTTL() - 1;
 			if (drinkState instanceof Thirsty) {
-				((Thirsty) drinkState).angry = false;
+				((Thirsty) drinkState).calmDown();
 			}
 			if (ttl != 0)
 				neighbor.getTheOtherSide().talkTo(new BottleHere(ttl));
@@ -87,8 +88,6 @@ public class BottleManager implements MessageReciever {
 	public interface DrinkState {
 		void getBottle(Side neighbor);
 
-		boolean hasBottle();
-
 		void onStart();
 	}
 
@@ -110,11 +109,16 @@ public class BottleManager implements MessageReciever {
 			});
 		}
 
+	}
+	
+	public class Sleep implements DrinkState {
 		@Override
-		public boolean hasBottle() {
-			return true;
+		public void getBottle(Side neighbor) {
 		}
 
+		@Override
+		public void onStart() {
+		}
 	}
 
 	public class Thirsty implements DrinkState {
@@ -131,8 +135,12 @@ public class BottleManager implements MessageReciever {
 			setAngryTimer();
 		}
 
+		public void calmDown() {
+			angry = false;
+		}
+
 		private void setAngryTimer() {
-			Timer.setTimeOut(1000, () -> {
+			Timer.setTimeOut(10000, () -> {
 				if (getDrinkState() == this) {
 					angry = true;
 					Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
@@ -147,12 +155,6 @@ public class BottleManager implements MessageReciever {
 					});
 				}
 			});
-
-		}
-
-		@Override
-		public boolean hasBottle() {
-			return false;
 		}
 
 	}
@@ -172,11 +174,6 @@ public class BottleManager implements MessageReciever {
 					setDrinkState(new Thirsty());
 				}
 			});
-		}
-
-		@Override
-		public boolean hasBottle() {
-			return false;
 		}
 
 	}
