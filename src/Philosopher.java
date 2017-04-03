@@ -13,24 +13,25 @@ public class Philosopher {
 	public static final int SERVER_PORT = 4848;
 	public static boolean verbose = true;
 	public static boolean automate = true;
+	private static Philosopher philosopher;
 
 	private final Side left, right;
 	private State state;
 
-	public Philosopher(String left, String right) {
+	private Philosopher(String left, String right) {
 		this.left = new Side(left, true);
 		this.right = new Side(right, false);
 	}
 
 	public void setState(State state) {
 		this.state = state;
-		this.state.switchedTo(this);
+		this.state.switchedTo();
 	}
 
 	public State getState() {
 		return state;
 	}
-	
+
 	public Side getRight() {
 		return right;
 	}
@@ -58,7 +59,7 @@ public class Philosopher {
 						if (verbose) {
 							System.out.println("Recieving request from " + neighbor + " " + packet);
 						}
-						state.recieveMessageFrom(Philosopher.this, packet, neighbor);
+						state.recieveMessageFrom(packet, neighbor);
 						client.close();
 					}
 				} catch (IOException | ClassNotFoundException e) {
@@ -89,9 +90,13 @@ public class Philosopher {
 		this.setState(new Thinking());
 	}
 
+	public static Philosopher get() {
+		return philosopher;
+	}
+
 	public static void main(String[] args) {
-		Philosopher p = new Philosopher(args[0], args[1]);
-		p.startServer();
+		philosopher = new Philosopher(args[0], args[1]);
+		philosopher.startServer();
 
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
@@ -99,10 +104,10 @@ public class Philosopher {
 			String input = in.nextLine();
 			switch (input) {
 			case "thinking":
-				p.setState(new Thinking());
+				philosopher.setState(new Thinking());
 				break;
 			case "hungry":
-				p.setState(new Hungry());
+				philosopher.setState(new Hungry());
 				break;
 			default:
 				System.out.println("Revieved event: " + input);

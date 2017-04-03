@@ -1,5 +1,5 @@
 
-public class Dead implements State {
+public class Sleep implements State {
 
 	@Override
 	public void recieveMessageFrom(Message packet, Side isLeft) {
@@ -8,7 +8,10 @@ public class Dead implements State {
 
 	@Override
 	public void switchedTo() {
-		System.out.println("I am dead");
+		System.out.println("I am sleeping");
+		Timer.setTimeOut(0, 500, this, () -> {
+
+		});
 	}
 
 }
