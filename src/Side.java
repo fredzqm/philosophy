@@ -15,6 +15,12 @@ public class Side {
 		return isLeft;
 	}
 
+	public Side getTheOtherSide() {
+		if (isLeft)
+			return Philosopher.get().getRight();
+		return Philosopher.get().getLeft();
+	}
+
 	public void talkTo(Message packet) {
 		try {
 			Socket s = new Socket(ip, Philosopher.SERVER_PORT);

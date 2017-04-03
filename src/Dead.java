@@ -7,7 +7,7 @@ public class Dead implements State {
 	}
 
 	@Override
-	public void switchedTo() {
+	public void onStart() {
 		System.out.println("I am dead");
 	}
 

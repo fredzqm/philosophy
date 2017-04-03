@@ -7,10 +7,10 @@ public class Sleep implements State {
 	}
 
 	@Override
-	public void switchedTo() {
+	public void onStart() {
 		System.out.println("I am sleeping");
 		Timer.setTimeOut(0, 500, this, () -> {
-
+			Philosopher.get().setFoodState(new Thinking());
 		});
 	}
 

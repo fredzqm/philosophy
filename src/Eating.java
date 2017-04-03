@@ -8,10 +8,10 @@ public class Eating implements State {
 	}
 
 	@Override
-	public void switchedTo() {
+	public void onStart() {
 		System.out.println("I am eating");
 		Timer.setTimeOut(100, 200, this, () -> {
-				Philosopher.get().setState(new Thinking());
+				Philosopher.get().setFoodState(new Thinking());
 		});
 	}
 }

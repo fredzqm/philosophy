@@ -13,6 +13,14 @@ public class Timer {
 		setTimeOut((int) (Math.random() * (max - min)) + min, state, callback);
 	}
 
+	public static void setTimeOut(int min, int max, Runnable callback) {
+		setTimeOut((int) (Math.random() * (max - min)) + min, null, callback);
+	}
+
+	public static void setTimeOut(int timeOut, Runnable callback) {
+		setTimeOut(timeOut, null, callback);
+	}
+
 	public static void setTimeOut(int time, State state, Runnable callback) {
 		timeOuts.add(new TimeOutEvent(time, state, callback));
 	}
@@ -39,7 +47,7 @@ public class Timer {
 
 		@Override
 		public void run() {
-			if (state == Philosopher.get().getState())
+			if (state == null || state == Philosopher.get().getState())
 				callback.run();
 		}
 	}

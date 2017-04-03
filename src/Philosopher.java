@@ -14,22 +14,25 @@ public class Philosopher {
 	public static boolean verbose = true;
 	public static boolean automate = true;
 	private static Philosopher philosopher;
-
+	
+	
 	private final Side left, right;
-	private State state;
-
+	private State foodState;
+	private BottleManager bottleManager;
+	
 	private Philosopher(String left, String right) {
 		this.left = new Side(left, true);
 		this.right = new Side(right, false);
+		bottleManager = new BottleManager();
 	}
 
-	public void setState(State state) {
-		this.state = state;
-		this.state.switchedTo();
+	public void setFoodState(State state) {
+		this.foodState = state;
+		this.foodState.onStart();
 	}
 
 	public State getState() {
-		return state;
+		return foodState;
 	}
 
 	public Side getRight() {
@@ -59,7 +62,8 @@ public class Philosopher {
 						if (verbose) {
 							System.out.println("Recieving request from " + neighbor + " " + packet);
 						}
-						state.recieveMessageFrom(packet, neighbor);
+						foodState.recieveMessageFrom(packet, neighbor);
+						bottleManager.recieveMessageFrom(packet, neighbor);
 						client.close();
 					}
 				} catch (IOException | ClassNotFoundException e) {
@@ -87,11 +91,15 @@ public class Philosopher {
 				}
 			}
 		}).start();
-		this.setState(new Thinking());
+		this.setFoodState(new Thinking());
 	}
 
 	public static Philosopher get() {
 		return philosopher;
+	}
+
+	public static BottleManager getDrinkingManager() {
+		return philosopher.bottleManager;
 	}
 
 	public static void main(String[] args) {
@@ -104,10 +112,10 @@ public class Philosopher {
 			String input = in.nextLine();
 			switch (input) {
 			case "thinking":
-				philosopher.setState(new Thinking());
+				philosopher.setFoodState(new Thinking());
 				break;
 			case "hungry":
-				philosopher.setState(new Hungry());
+				philosopher.setFoodState(new Hungry());
 				break;
 			default:
 				System.out.println("Revieved event: " + input);

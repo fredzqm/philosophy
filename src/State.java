@@ -6,12 +6,12 @@ public interface State {
 	 * @param isLeft
 	 * @return get a request from a peer
 	 */
-	void recieveMessageFrom(Message packet, Side isLeft);
+	void recieveMessageFrom(Message packet, Side neighbor);
 
 	/**
 	 * executed whenever the philosopher switch to this state
 	 * 
 	 */
-	void switchedTo();
+	void onStart();
 
 }

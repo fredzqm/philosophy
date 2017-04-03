@@ -1,22 +1,18 @@
 import java.io.Serializable;
 
 public class Message implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
 
 	public static class ChopstickReqest extends Message {
 		private static final long serialVersionUID = 1L;
 	}
-	
-	public static class BottleReqest extends Message {
-		private static final long serialVersionUID = 1L;
-	}
-	
-	public static class IsAvailableResponse extends Message {
+
+	public static class ChopstickResponse extends Message {
 		private static final long serialVersionUID = 1L;
 		private final boolean isAvailable;
-		
-		public IsAvailableResponse(boolean available) {
+
+		public ChopstickResponse(boolean available) {
 			this.isAvailable = available;
 		}
 
@@ -24,21 +20,20 @@ public class Message implements Serializable {
 			return isAvailable;
 		}
 	}
-	
-	public static class ChopstickResponse extends IsAvailableResponse {
-		private static final long serialVersionUID = 1L;
 
-		public ChopstickResponse(boolean available) {
-			super(available);
-		}
+	public static class Bottle extends Message {
+		private static final long serialVersionUID = 1L;
 	}
 
-	public static class BottleResponse extends IsAvailableResponse {
+	public static class ACKBottle extends Message {
 		private static final long serialVersionUID = 1L;
-
-		public BottleResponse(boolean available) {
-			super(available);
-		}
 	}
 
+	public static class BottleSearch extends Message {
+		private static final long serialVersionUID = 1L;
+	}
+
+	public static class BottleHere extends Message {
+		private static final long serialVersionUID = 1L;
+	}
 }

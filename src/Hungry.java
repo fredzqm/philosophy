@@ -23,15 +23,15 @@ public class Hungry implements State {
 			}
 		}
 		if (has.size() == 2)
-			Philosopher.get().setState(new Eating());
+			Philosopher.get().setFoodState(new Eating());
 	}
 
 	@Override
-	public void switchedTo() {
+	public void onStart() {
 		System.out.println("I am hungry");
 		has = new HashSet<>();
 		Timer.setTimeOut(10000, this, () -> {
-			Philosopher.get().setState(new Dead());
+			Philosopher.get().setFoodState(new Dead());
 		});
 		Philosopher.get().getRight().talkTo(new Message.ChopstickReqest());
 		Philosopher.get().getLeft().talkTo(new Message.ChopstickReqest());
