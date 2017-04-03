@@ -1,4 +1,3 @@
-
 public class BottleManager {
 	public final int NUM_OF_NODE = 4;
 

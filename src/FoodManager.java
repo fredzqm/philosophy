@@ -17,6 +17,25 @@ public class FoodManager {
 		this.foodState.recieveMessageFrom(packet, neighbor);
 	}
 
+	
+	public interface State {
+		/**
+		 * 
+		 * @param philosopher
+		 * @param packet
+		 * @param isLeft
+		 * @return get a request from a peer
+		 */
+		void recieveMessageFrom(Message packet, Side neighbor);
+
+		/**
+		 * executed whenever the philosopher switch to this state
+		 * 
+		 */
+		void onStart();
+	}
+
+	
 	public class Eating implements State {
 
 		@Override
@@ -122,6 +141,20 @@ public class FoodManager {
 				if (foodState != this)
 					setFoodState(new Thinking());
 			});
+		}
+
+	}
+
+	public class Dead implements State {
+
+		@Override
+		public void recieveMessageFrom(Message packet, Side isLeft) {
+
+		}
+
+		@Override
+		public void onStart() {
+			System.out.println("I am dead");
 		}
 
 	}
