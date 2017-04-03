@@ -95,27 +95,26 @@ public class BottleManager {
 		@Override
 		public void onStart() {
 			System.out.println("I am thirsty");
-			Timer.setTimeOut(1000, () -> {
-				getAngry();
-			});
+			setAngryTimer();
 		}
 
-		private void getAngry() {
-			System.out.println("I am angry");
-			if (getDrinkState() == this) {
-				angry = true;
-				Philosopher.get().getLeft().talkTo(new Message.BottleSearch(NUM_OF_NODE));
-				Philosopher.get().getRight().talkTo(new Message.BottleSearch(NUM_OF_NODE));
-				Timer.setTimeOut(10, () -> {
-					if (angry) {
-						setDrinkState(new Drinking());
-					} else {
-						Timer.setTimeOut(1000, () -> {
-							getAngry();
-						});
-					}
-				});
-			}
+		private void setAngryTimer() {
+			Timer.setTimeOut(1000, () -> {
+				if (getDrinkState() == this) {
+					angry = true;
+					Philosopher.get().getLeft().talkTo(new Message.BottleSearch(NUM_OF_NODE));
+					Philosopher.get().getRight().talkTo(new Message.BottleSearch(NUM_OF_NODE));
+					Timer.setTimeOut(10, () -> {
+						if (angry) {
+							System.out.print("I am angry and ");
+							setDrinkState(new Drinking());
+						} else {
+							setAngryTimer();
+						}
+					});
+				}
+			});
+
 		}
 
 		@Override

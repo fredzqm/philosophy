@@ -4,7 +4,6 @@ import java.util.Set;
 public class Hungry implements State {
 	private final int REPEAT_TIME = 10;
 	private Set<Boolean> has;
-	private Runnable check;
 
 	@Override
 	public void recieveMessageFrom(Message packet, Side neighbor) {
@@ -35,15 +34,18 @@ public class Hungry implements State {
 		});
 		Philosopher.get().getRight().talkTo(new Message.ChopstickReqest());
 		Philosopher.get().getLeft().talkTo(new Message.ChopstickReqest());
+		
+		setUpCheckTimer();
+	}
 
-		check = () -> {
+	private void setUpCheckTimer() {
+		Timer.setTimeOut(REPEAT_TIME, this, () -> {
 			if (!has.contains(false))
 				Philosopher.get().getRight().talkTo(new Message.ChopstickReqest());
 			if (!has.contains(true))
 				Philosopher.get().getLeft().talkTo(new Message.ChopstickReqest());
-			Timer.setTimeOut(REPEAT_TIME, Hungry.this, check);
-		};
-		Timer.setTimeOut(REPEAT_TIME, this, check);
+			setUpCheckTimer();
+		});		
 	}
 
 }
