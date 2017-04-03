@@ -1,7 +1,7 @@
 import java.util.HashSet;
 import java.util.Set;
 
-public class FoodManager {
+public class FoodManager implements MessageReciever {
 	private State foodState;
 
 	public FoodManager() {

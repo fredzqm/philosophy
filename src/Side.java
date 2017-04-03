@@ -23,9 +23,9 @@ public class Side {
 
 	public void talkTo(Message packet) {
 		try {
-			Socket s = new Socket(ip, Philosopher.SERVER_PORT);
+			Socket s = new Socket(ip, Server.SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-			if (Philosopher.verbose)
+			if (Server.verbose)
 				System.out.println("Sending request to " + this + " " + packet);
 			out.writeObject(packet);
 			s.close();

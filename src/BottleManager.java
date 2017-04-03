@@ -1,4 +1,4 @@
-public class BottleManager {
+public class BottleManager implements MessageReciever {
 	public final int NUM_OF_NODE = 4;
 
 	public boolean hasBottle = false;
