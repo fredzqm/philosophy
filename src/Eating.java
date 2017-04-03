@@ -1,7 +1,7 @@
-public class Eating extends State {
+public class Eating implements State {
 
 	@Override
-	void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
+	public void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
 		if (packet instanceof Message.ChopstickReqest) {
 			neighbor.talkTo(new Message.ChopstickResponse(false));
 		}

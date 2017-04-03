@@ -1,13 +1,13 @@
 import java.util.HashSet;
 import java.util.Set;
 
-public class Hungry extends State {
+public class Hungry implements State {
 	private final int REPEAT_TIME = 10;
 	private Set<Boolean> has;
 	private Runnable check;
 	
 	@Override
-	void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
+	public void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
 		if (packet instanceof Message.ChopstickReqest) {
 			if (Math.random() > 0.5) {
 				neighbor.talkTo(new Message.ChopstickResponse(false));

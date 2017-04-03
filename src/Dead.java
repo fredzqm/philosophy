@@ -1,8 +1,8 @@
 
-public class Dead extends State {
+public class Dead implements State {
 
 	@Override
-	void recieveMessageFrom(Philosopher philosopher, Message packet, Side isLeft) {
+	public void recieveMessageFrom(Philosopher philosopher, Message packet, Side isLeft) {
 
 	}
 

@@ -1,4 +1,4 @@
-public abstract class State {
+public interface State {
 	/**
 	 * 
 	 * @param philosopher
@@ -6,13 +6,13 @@ public abstract class State {
 	 * @param isLeft
 	 * @return get a request from a peer
 	 */
-	abstract void recieveMessageFrom(Philosopher philosopher, Message packet, Side isLeft);
+	void recieveMessageFrom(Philosopher philosopher, Message packet, Side isLeft);
 
 	/**
 	 * executed whenever the philosopher switch to this state
 	 * 
 	 * @param philosopher
 	 */
-	abstract void switchedTo(Philosopher philosopher);
+	void switchedTo(Philosopher philosopher);
 
 }

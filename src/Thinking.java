@@ -1,7 +1,7 @@
-public class Thinking extends State {
+public class Thinking implements State {
 
 	@Override
-	void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
+	public void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
 		if (packet instanceof Message.ChopstickReqest) {
 			neighbor.talkTo(new Message.ChopstickResponse(true));
 		}

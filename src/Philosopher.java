@@ -30,7 +30,7 @@ public class Philosopher {
 	public State getState() {
 		return state;
 	}
-
+	
 	public Side getRight() {
 		return right;
 	}
