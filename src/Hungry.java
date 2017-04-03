@@ -36,7 +36,7 @@ public class Hungry extends State {
 		System.out.println("I am hugry");
 		has = new HashSet<>();
 
-		Timer.setTimeOut(1000, () -> {
+		Timer.setTimeOut(10000, () -> {
 			if (philosopher.getState() == this)
 				philosopher.setState(new Dead());
 		});
