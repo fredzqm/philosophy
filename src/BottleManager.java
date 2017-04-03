@@ -1,54 +1,26 @@
-
 public class BottleManager implements MessageReciever {
 	public final int NUM_OF_NODE = 5;
 
 	public boolean hasBottle = false;
-	private static final int TIME_OUT = 100;
-	private DrinkState drinkState;
+	private static final int SEND_BOTTLE_TIME_OUT = 100;
+	private AWAKEDrinkState drinkState;
 
 	public BottleManager() {
 		setDrinkState(new NotThirsty());
 	}
 
-	public void setDrinkState(DrinkState state) {
+	public void setDrinkState(AWAKEDrinkState state) {
 		this.drinkState = state;
 		this.drinkState.onStart();
 	}
 
-	public DrinkState getDrinkState() {
-		return drinkState;
-	}
-
+	@Override
 	public void recieveMessageFrom(Message packet, Side neighbor) {
-		if (packet instanceof Bottle) {
-			neighbor.talkTo(new ACKBottle());
-			hasBottle = true;
-			drinkState.getBottle(neighbor);
-		} else if (packet instanceof ACKBottle) {
-			hasBottle = false;
-		} else if (packet instanceof BottleSearch) {
-			int ttl = ((BottleSearch) packet).getTTL() - 1;
-			if (hasBottle || drinkState instanceof Drinking) {
-				neighbor.talkTo(new BottleHere(NUM_OF_NODE));
-			} else if (ttl != 0)
-				neighbor.getTheOtherSide().talkTo(new BottleSearch(ttl));
-		} else if (packet instanceof BottleHere) {
-			int ttl = ((BottleHere) packet).getTTL() - 1;
-			if (drinkState instanceof Thirsty) {
-				((Thirsty) drinkState).calmDown();
-			}
-			if (ttl != 0)
-				neighbor.getTheOtherSide().talkTo(new BottleHere(ttl));
-		}
+		drinkState.recieveMessageFrom(packet, neighbor);
 	}
 
-	private void sendBottle(Side side) {
-		side.talkTo(new Bottle());
-		hasBottle = true;
-		Timer.setTimeOut(TIME_OUT, () -> {
-			if (hasBottle)
-				drinkState.getBottle(side.getTheOtherSide());
-		});
+	public State getDrinkState() {
+		return drinkState;
 	}
 
 	public static class Bottle extends Message {
@@ -83,51 +55,110 @@ public class BottleManager implements MessageReciever {
 		public int getTTL() {
 			return ttl;
 		}
+
 	}
 
-	public interface DrinkState {
-		void getBottle(Side neighbor);
-
-		void onStart();
-	}
-
-	public class Drinking implements DrinkState {
+	public abstract class AWAKEDrinkState implements State {
 
 		@Override
-		public void getBottle(Side neighbor) {
+		public void recieveMessageFrom(Message packet, Side neighbor) {
+			if (packet instanceof Bottle) {
+				neighbor.talkTo(new ACKBottle());
+				hasBottle = true;
+				recieveBottle(neighbor);
+			} else if (packet instanceof ACKBottle) {
+				reciveBottleACK();
+			} else if (packet instanceof BottleSearch) {
+				int ttl = ((BottleSearch) packet).getTTL() - 1;
+				if (hasBottle)
+					neighbor.talkTo(new BottleHere(NUM_OF_NODE));
+				else if (ttl != 0)
+					neighbor.getTheOtherSide().talkTo(new BottleSearch(ttl));
+			} else if (packet instanceof BottleHere) {
+				int ttl = ((BottleHere) packet).getTTL() - 1;
+				if (ttl != 0)
+					neighbor.getTheOtherSide().talkTo(new BottleHere(ttl));
+				recieveBottleHere();
+			}
+		}
 
+		protected void sendBottle(Side neighbor) {
+			neighbor.getTheOtherSide().talkTo(new Bottle());
+			Timer.setTimeOut(SEND_BOTTLE_TIME_OUT, () -> {
+				if (hasBottle) {
+					drinkState.recieveBottle(neighbor.getTheOtherSide());
+				}
+			});
+		}
+
+		public void reciveBottleACK() {
+			hasBottle = false;
+		}
+
+		public abstract void recieveBottle(Side neighbor);
+
+		public void recieveBottleHere() {}
+
+	}
+
+	public class Drinking extends AWAKEDrinkState {
+		private Side nextDir;
+
+		public Drinking(Side from) {
+			this.nextDir = from;
 		}
 
 		@Override
 		public void onStart() {
 			System.out.println("I am drinking");
-			Timer.setTimeOut(300, 1000, () -> {
+			hasBottle = true;
+			Timer.setTimeOut(300, 600, () -> {
 				if (getDrinkState() == this) {
 					setDrinkState(new NotThirsty());
-					sendBottle(Philosopher.getRight());
+					sendBottle(nextDir);
 				}
 			});
 		}
 
-	}
-	
-	public class Sleep implements DrinkState {
 		@Override
-		public void getBottle(Side neighbor) {
+		public void reciveBottleACK() {
+			System.out.println("I am drinking, but recieved a bottleACK");
 		}
+
+		@Override
+		public void recieveBottle(Side neighbor) {
+			System.out.println("I am drinking, but recieved a bottle from " + neighbor);
+		}
+
+	}
+
+	public class Sleep extends AWAKEDrinkState {
 
 		@Override
 		public void onStart() {
+			System.out.println("I am sleeping");
+		}
+
+		@Override
+		public void recieveMessageFrom(Message packet, Side neighbor) {
+		}
+
+		@Override
+		public void recieveBottle(Side neighbor) {
+
+		}
+
+		public void reciveBottleACK() {
+			
+		}
+
+		public void recieveBottleHere() {
+			
 		}
 	}
 
-	public class Thirsty implements DrinkState {
+	public class Thirsty extends AWAKEDrinkState {
 		private boolean angry;
-
-		@Override
-		public void getBottle(Side neighbor) {
-			setDrinkState(new Drinking());
-		}
 
 		@Override
 		public void onStart() {
@@ -135,36 +166,40 @@ public class BottleManager implements MessageReciever {
 			setAngryTimer();
 		}
 
-		public void calmDown() {
-			angry = false;
-		}
-
 		private void setAngryTimer() {
-			Timer.setTimeOut(10000, () -> {
+			angry = true;
+			Timer.setTimeOut(10000, 20000, () -> {
 				if (getDrinkState() == this) {
-					angry = true;
-					Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
-					Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
-					Timer.setTimeOut(10, () -> {
-						if (angry) {
-							System.out.print("I am angry and ");
-							setDrinkState(new Drinking());
-						} else {
-							setAngryTimer();
-						}
-					});
+					if (angry) {
+						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
+						Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
+						Timer.setTimeOut(10, () -> {
+							if (getDrinkState() == this && angry) {
+								System.out.print("I am angry and ");
+								setDrinkState(new Drinking(Philosopher.getRight()));
+							} else {
+								setAngryTimer();
+							}
+						});
+					} else {
+						setAngryTimer();
+					}
 				}
 			});
 		}
 
-	}
-
-	public class NotThirsty implements DrinkState {
+		@Override
+		public void recieveBottle(Side neighbor) {
+			setDrinkState(new Drinking(neighbor.getTheOtherSide()));
+		}
 
 		@Override
-		public void getBottle(Side neighbor) {
-			sendBottle(neighbor.getTheOtherSide());
+		public void recieveBottleHere() {
+			angry = false;
 		}
+	}
+
+	public class NotThirsty extends AWAKEDrinkState {
 
 		@Override
 		public void onStart() {
@@ -174,6 +209,10 @@ public class BottleManager implements MessageReciever {
 					setDrinkState(new Thirsty());
 				}
 			});
+		}
+
+		public void recieveBottle(Side neighbor) {
+			sendBottle(neighbor.getTheOtherSide());
 		}
 
 	}
