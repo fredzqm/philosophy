@@ -17,18 +17,12 @@ public class Philosopher {
 	public static boolean verbose = true;
 	public static boolean automate = true;
 
-	private final Neighbor left, right;
-	private final boolean leftFirst;
+	private final Side left, right;
 	private State state;
-	private Chopstick hasLeftChop, hasRightChop;
 
 	public Philosopher(String left, String right) {
-		this.left = new Neighbor(left);
-		this.right = new Neighbor(right);
-		this.leftFirst = left.compareTo(right) > 0;
-		this.hasLeftChop = null;
-
-		this.hasRightChop = new Chopstick();
+		this.left = new Side(left, true);
+		this.right = new Side(right, false);
 	}
 
 	public void setState(State state) {
@@ -40,26 +34,12 @@ public class Philosopher {
 		return state;
 	}
 
-	public Collection<Neighbor> getNeighbors() {
-		return Arrays.asList(left, right);
+	public Side getRight() {
+		return right;
 	}
 
-	public void setChopstick(Chopstick chopstick, boolean isLeft) {
-		if (isLeft)
-			this.hasLeftChop = chopstick;
-		else
-			this.hasRightChop = chopstick;
-	}
-
-	public Chopstick getChopstick(boolean isLeft) {
-		if (isLeft)
-			return this.hasLeftChop;
-		else
-			return this.hasRightChop;
-	}
-
-	public boolean isLeftFirst() {
-		return leftFirst;
+	public Side getLeft() {
+		return left;
 	}
 
 	public void startServer() {
@@ -74,11 +54,10 @@ public class Philosopher {
 					s.bind(myInet);
 					while (true) {
 						client = s.accept();
-						ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 						ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 						Message packet = (Message) in.readObject();
 						String ip = client.getInetAddress().getHostAddress();
-						Neighbor neighbor = findNeighbor(ip);
+						Side neighbor = findNeighbor(ip);
 						if (verbose) {
 							System.out.println("Recieving request from " + neighbor + " " + packet);
 						}
@@ -99,7 +78,7 @@ public class Philosopher {
 				}
 			}
 
-			private Neighbor findNeighbor(String ip) {
+			private Side findNeighbor(String ip) {
 				if (ip.equals(left.getIP())) {
 					return left;
 				} else if (ip.equals(right.getIP())) {
@@ -117,6 +96,7 @@ public class Philosopher {
 		Philosopher p = new Philosopher(args[0], args[1]);
 		p.startServer();
 
+		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			String input = in.nextLine();

@@ -7,6 +7,7 @@ public class Message implements Serializable {
 	public static class ChopstickReqest extends Message {
 		private static final long serialVersionUID = 1L;
 	}
+	
 	public static class BottleReqest extends Message {
 		private static final long serialVersionUID = 1L;
 	}

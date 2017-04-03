@@ -1,16 +1,11 @@
 public class Thinking extends State {
 
 	@Override
-	void recieveMessageFrom(Philosopher philosopher, Message packet, Neighbor isLeft) {
-
+	void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
+		if (packet instanceof Message.ChopstickReqest) {
+			neighbor.talkTo(new Message.ChopstickResponse(true));
+		}
 	}
-	
-//	@Override
-//	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
-//		Chopstick chopstick = philosopher.getChopstick(isLeft);
-//		philosopher.setChopstick(null, isLeft);
-////		return new Response(chopstick);
-//	}
 
 	@Override
 	public void switchedTo(Philosopher philosopher) {
@@ -19,20 +14,6 @@ public class Thinking extends State {
 			if (philosopher.getState() == this)
 				philosopher.setState(new Hungry());
 		});
-
-		Chopstick l = philosopher.getChopstick(true);
-		Chopstick r = philosopher.getChopstick(false);
-		if (philosopher.isLeftFirst()) {
-			if (r != null)
-				r.clean();
-			if (l != null)
-				l.clean();
-		} else {
-			if (l != null)
-				l.clean();
-			if (r != null)
-				r.clean();
-		}
 	}
 
 }

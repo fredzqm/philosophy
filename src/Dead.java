@@ -2,7 +2,7 @@
 public class Dead extends State {
 
 	@Override
-	void recieveMessageFrom(Philosopher philosopher, Message packet, Neighbor isLeft) {
+	void recieveMessageFrom(Philosopher philosopher, Message packet, Side isLeft) {
 
 	}
 

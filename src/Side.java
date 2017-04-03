@@ -1,20 +1,24 @@
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class Neighbor {
+public class Side {
 	private String ip;
+	private boolean isLeft;
 
-	public Neighbor(String ip) {
+	public Side(String ip, boolean isLeft) {
 		this.ip = ip;
+		this.isLeft = isLeft;
 	}
-	
+
+	public boolean isLeft() {
+		return isLeft;
+	}
+
 	public void talkTo(Message packet) {
 		try {
 			Socket s = new Socket(ip, Philosopher.SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
 			if (Philosopher.verbose)
 				System.out.println("Sending request to " + this + " " + packet);
 			out.writeObject(packet);
@@ -26,7 +30,7 @@ public class Neighbor {
 
 	@Override
 	public String toString() {
-		return ip;
+		return isLeft ? "left" : "right";
 	}
 
 	public String getIP() {

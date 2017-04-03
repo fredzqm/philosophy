@@ -1,52 +1,48 @@
-public class Hungry extends State {
-	
-	@Override
-	void recieveMessageFrom(Philosopher philosopher, Message packet, Neighbor isLeft) {
+import java.util.HashSet;
+import java.util.Set;
 
+public class Hungry extends State {
+	private final int REPEAT_TIME = 10;
+
+	private Set<Boolean> has;
+
+	@Override
+	void recieveMessageFrom(Philosopher philosopher, Message packet, Side neighbor) {
+		if (packet instanceof Message.ChopstickReqest) {
+			if (Math.random() > 0.5) {
+				neighbor.talkTo(new Message.ChopstickResponse(false));
+				has.add(neighbor.isLeft());
+			} else {
+				neighbor.talkTo(new Message.ChopstickResponse(true));
+				has.remove(neighbor.isLeft());
+			}
+		} else if (packet instanceof Message.ChopstickResponse) {
+			Message.ChopstickResponse resp = (Message.ChopstickResponse) packet;
+			if (resp.isAvailable()) {
+				has.add(neighbor.isLeft());
+			} else {
+				Timer.setTimeOut(REPEAT_TIME, () -> {
+					if (philosopher.getState() == this)
+						neighbor.talkTo(new Message.ChopstickReqest());
+				});
+			}
+		}
+		if (has.size() == 2)
+			philosopher.setState(new Eating());
 	}
-	
-//	@Override
-//	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
-//		Chopstick chop = philosopher.getChopstick(isLeft);
-//		if (chop != null && chop.isDirty()) {
-//			philosopher.setChopstick(null, isLeft);
-////			return new Response(chop);
-//		} else {
-////			return new Response(null);
-//		}
-//	}
 
 	@Override
 	public void switchedTo(Philosopher philosopher) {
 		System.out.println("I am hugry");
+		has = new HashSet<>();
+
 		Timer.setTimeOut(1000, () -> {
 			if (philosopher.getState() == this)
-				philosopher.setState(new Hungry());
+				philosopher.setState(new Dead());
 		});
 
-		if (philosopher.isLeftFirst()) {
-			requestChopstick(philosopher, true);
-			requestChopstick(philosopher, false);
-		} else {
-			requestChopstick(philosopher, false);
-			requestChopstick(philosopher, true);
-		}
-		philosopher.setState(new Eating());
-	}
-
-	private void requestChopstick(Philosopher philosopher, boolean isLeft) {
-		Chopstick chopstick = philosopher.getChopstick(isLeft);
-		while (chopstick == null) {
-//			philosopher.talkTo(new Message(), isLeft);
-//			chopstick = resp.getChopstick();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		chopstick.clean();
-		philosopher.setChopstick(chopstick, isLeft);
+		philosopher.getRight().talkTo(new Message.ChopstickReqest());
+		philosopher.getLeft().talkTo(new Message.ChopstickReqest());
 	}
 
 }
