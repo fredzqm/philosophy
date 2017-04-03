@@ -4,6 +4,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
 
 /**
@@ -15,14 +17,14 @@ public class Philosopher {
 	public static boolean verbose = true;
 	public static boolean automate = true;
 
-	private final String left, right;
+	private final Neighbor left, right;
 	private final boolean leftFirst;
 	private State state;
 	private Chopstick hasLeftChop, hasRightChop;
 
 	public Philosopher(String left, String right) {
-		this.left = left;
-		this.right = right;
+		this.left = new Neighbor(left);
+		this.right = new Neighbor(right);
 		this.leftFirst = left.compareTo(right) > 0;
 		this.hasLeftChop = null;
 
@@ -36,6 +38,10 @@ public class Philosopher {
 
 	public State getState() {
 		return state;
+	}
+
+	public Collection<Neighbor> getNeighbors() {
+		return Arrays.asList(left, right);
 	}
 
 	public void setChopstick(Chopstick chopstick, boolean isLeft) {
@@ -56,13 +62,6 @@ public class Philosopher {
 		return leftFirst;
 	}
 
-	private static String toStringLeftOrRight(boolean isLeft) {
-		if (isLeft)
-			return "left";
-		else
-			return "right";
-	}
-
 	public void startServer() {
 		new Thread(new Runnable() {
 			@Override
@@ -78,11 +77,12 @@ public class Philosopher {
 						ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 						ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 						Message packet = (Message) in.readObject();
-						String name = client.getInetAddress().getHostAddress();
-						boolean isLeft = findServer(name);
-						if (verbose)
-							System.out.println("Recieving request from " + toStringLeftOrRight(isLeft) + " " + packet);
-						state.recieveMessageFrom(Philosopher.this, packet, isLeft);
+						String ip = client.getInetAddress().getHostAddress();
+						Neighbor neighbor = findNeighbor(ip);
+						if (verbose) {
+							System.out.println("Recieving request from " + neighbor + " " + packet);
+						}
+						state.recieveMessageFrom(Philosopher.this, packet, neighbor);
 						client.close();
 					}
 				} catch (IOException | ClassNotFoundException e) {
@@ -99,37 +99,18 @@ public class Philosopher {
 				}
 			}
 
-			private boolean findServer(String name) {
-				if (name.equals(left)) {
-					return true;
-				} else if (name.equals(right)) {
-					return false;
+			private Neighbor findNeighbor(String ip) {
+				if (ip.equals(left.getIP())) {
+					return left;
+				} else if (ip.equals(right.getIP())) {
+					return right;
 				} else {
 					throw new RuntimeException(
-							String.format("Recieved connection from %s\n\tleft:&s\n\tright:%s\n", name, left, right));
+							String.format("Recieved connection from %s\n\tleft:&s\n\tright:%s\n", ip, left, right));
 				}
 			}
 		}).start();
 		this.setState(new Thinking());
-	}
-
-	public void talkTo(Message packet, boolean isLeft) {
-		String ip = isLeft ? left : right;
-		try {
-			Socket s = new Socket(ip, SERVER_PORT);
-			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-			if (verbose)
-				System.out.println("Sending request to " + toStringLeftOrRight(isLeft) + " " + packet);
-
-			out.writeObject(packet);
-			Response response = (Response) in.readObject();
-			if (verbose)
-				System.out.println("Recieving response from " + toStringLeftOrRight(isLeft) + " " + response);
-			s.close();
-		} catch (ClassNotFoundException | IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public static void main(String[] args) {

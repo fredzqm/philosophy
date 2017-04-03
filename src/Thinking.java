@@ -1,11 +1,16 @@
 public class Thinking extends State {
 
 	@Override
-	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
-		Chopstick chopstick = philosopher.getChopstick(isLeft);
-		philosopher.setChopstick(null, isLeft);
-//		return new Response(chopstick);
+	void recieveMessageFrom(Philosopher philosopher, Message packet, Neighbor isLeft) {
+
 	}
+	
+//	@Override
+//	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
+//		Chopstick chopstick = philosopher.getChopstick(isLeft);
+//		philosopher.setChopstick(null, isLeft);
+////		return new Response(chopstick);
+//	}
 
 	@Override
 	public void switchedTo(Philosopher philosopher) {

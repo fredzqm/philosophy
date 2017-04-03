@@ -1,14 +1,20 @@
 public class Hungry extends State {
+	
 	@Override
-	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
-		Chopstick chop = philosopher.getChopstick(isLeft);
-		if (chop != null && chop.isDirty()) {
-			philosopher.setChopstick(null, isLeft);
-//			return new Response(chop);
-		} else {
-//			return new Response(null);
-		}
+	void recieveMessageFrom(Philosopher philosopher, Message packet, Neighbor isLeft) {
+
 	}
+	
+//	@Override
+//	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
+//		Chopstick chop = philosopher.getChopstick(isLeft);
+//		if (chop != null && chop.isDirty()) {
+//			philosopher.setChopstick(null, isLeft);
+////			return new Response(chop);
+//		} else {
+////			return new Response(null);
+//		}
+//	}
 
 	@Override
 	public void switchedTo(Philosopher philosopher) {
@@ -31,7 +37,7 @@ public class Hungry extends State {
 	private void requestChopstick(Philosopher philosopher, boolean isLeft) {
 		Chopstick chopstick = philosopher.getChopstick(isLeft);
 		while (chopstick == null) {
-			philosopher.talkTo(new Message(), isLeft);
+//			philosopher.talkTo(new Message(), isLeft);
 //			chopstick = resp.getChopstick();
 			try {
 				Thread.sleep(1000);

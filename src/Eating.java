@@ -1,7 +1,8 @@
 public class Eating extends State {
+	
 	@Override
-	public void recieveMessageFrom(Philosopher philosopher, Message packet, boolean isLeft) {
-//		return new Response(null);
+	void recieveMessageFrom(Philosopher philosopher, Message packet, Neighbor isLeft) {
+
 	}
 
 	@Override
