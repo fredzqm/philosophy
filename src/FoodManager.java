@@ -103,7 +103,7 @@ public class FoodManager implements MessageReciever {
 	}
 
 	public class Hungry implements State {
-		private final int REPEAT_TIME = 10;
+		private final int REPEAT_TIME = 50;
 		private volatile boolean leftResponed, rightResponed;
 
 		private Set<Boolean> has;
