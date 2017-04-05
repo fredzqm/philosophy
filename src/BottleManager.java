@@ -24,7 +24,9 @@ public class BottleManager implements MessageReciever {
 
 	@Override
 	public synchronized void recieveMessageFrom(Message packet, Side neighbor) {
-		drinkState.recieveMessageFrom(packet, neighbor);
+		synchronized (Timer.class) {
+			drinkState.recieveMessageFrom(packet, neighbor);
+		}
 	}
 
 	public State getDrinkState() {
@@ -222,7 +224,7 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void recieveBottleHere() {
 			angry = false;
-			System.err.println("calmed down");
+			System.out.println("calmed down");
 		}
 	}
 
