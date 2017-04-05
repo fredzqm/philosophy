@@ -4,9 +4,17 @@ public class BottleManager implements MessageReciever {
 	public boolean hasBottle = false;
 	private static final int SEND_BOTTLE_TIME_OUT = 100;
 	private AWAKEDrinkState drinkState;
+	private static BottleManager bottleManager;
 
-	public BottleManager() {
+	private BottleManager() {
 		setDrinkState(new NotThirsty());
+	}
+	
+	public static BottleManager getInstance(){
+		if (bottleManager == null){
+			bottleManager = new BottleManager();
+		}
+		return bottleManager;
 	}
 
 	public void setDrinkState(AWAKEDrinkState state) {
@@ -130,6 +138,10 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am drinking");
 			hasBottle = true;
+			boolean isSleepy = Math.random() > 0.9;
+			if (isSleepy) {
+//				
+			}
 			Timer.setTimeOut(300, 600, () -> {
 				if (getDrinkState() == this) {
 					setDrinkState(new NotThirsty());

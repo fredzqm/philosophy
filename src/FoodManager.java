@@ -3,9 +3,17 @@ import java.util.Set;
 
 public class FoodManager implements MessageReciever {
 	private State foodState;
-
-	public FoodManager() {
+	private static FoodManager foodManager;
+	
+	private FoodManager() {
 		this.setFoodState(new Thinking());
+	}
+	
+	public static FoodManager getInstance(){
+		if (foodManager == null){
+			foodManager = new FoodManager();
+		}
+		return foodManager;
 	}
 
 	public void setFoodState(State state) {

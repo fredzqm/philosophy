@@ -31,8 +31,8 @@ public class Philosopher {
 		left = new Side(args[0], true);
 		right = new Side(args[1], false);
 
-//		FoodManager foodManager = new FoodManager();
-		BottleManager drinkManager = new BottleManager();
+//		FoodManager foodManager = FoodManager.getInstance();
+		BottleManager drinkManager = BottleManager.getInstance();
 
 		Server server = new Server();
 //		server.addMessageReciever(foodManager);
