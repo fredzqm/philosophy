@@ -30,7 +30,7 @@ public class Side {
 			out.writeObject(packet);
 			s.close();
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			System.err.println("Error when talk to " + this + " :" + e.getMessage());
 		}
 	}
 

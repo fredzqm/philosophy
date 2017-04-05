@@ -21,34 +21,29 @@ public class Server {
 			@Override
 			public void run() {
 				ServerSocket s = null;
-				Socket client = null;
+				Side neighbor = null;
 				try {
 					s = new ServerSocket();
 					InetSocketAddress myInet = new InetSocketAddress(SERVER_PORT);
 					s.bind(myInet);
-					while (true) {
-						client = s.accept();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				while (true) {
+					try {
+						Socket client = s.accept();
 						ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 						Message packet = (Message) in.readObject();
 						String ip = client.getInetAddress().getHostAddress();
-						Side neighbor = Philosopher.resoveSide(ip);
+						neighbor = Philosopher.resoveSide(ip);
 						if (verbose) {
 							System.out.println("\t\tget " + neighbor + " " + packet);
 						}
 						for (MessageReciever mr : recievers)
 							mr.recieveMessageFrom(packet, neighbor);
 						client.close();
-					}
-				} catch (IOException | ClassNotFoundException e) {
-					System.err.println(e.getMessage());
-				} finally {
-					try {
-						if (client != null)
-							client.close();
-						if (s != null)
-							s.close();
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (IOException | ClassNotFoundException e) {
+						System.err.println("Error when recieving from " + neighbor + ":" + e.getMessage());
 					}
 				}
 			}
