@@ -92,12 +92,10 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
 			if (packet instanceof Bottle) {
-				System.out.println("Recieving bottle");
 				neighbor.talkTo(new ACKBottle());
 				hasBottle = true;
 				recieveBottle(neighbor);
 			} else if (packet instanceof ACKBottle) {
-				System.out.println("Recieving ACK");
 				hasBottle = false;
 			} else if (packet instanceof BottleSearch) {
 				int ttl = ((BottleSearch) packet).getTTL() - 1;
