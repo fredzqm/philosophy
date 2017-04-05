@@ -17,13 +17,13 @@ public class BottleManager implements MessageReciever {
 		return bottleManager;
 	}
 
-	public void setDrinkState(AWAKEDrinkState state) {
+	public synchronized void setDrinkState(AWAKEDrinkState state) {
 		this.drinkState = state;
 		this.drinkState.onStart();
 	}
 
 	@Override
-	public void recieveMessageFrom(Message packet, Side neighbor) {
+	public synchronized void recieveMessageFrom(Message packet, Side neighbor) {
 		drinkState.recieveMessageFrom(packet, neighbor);
 	}
 
@@ -192,7 +192,7 @@ public class BottleManager implements MessageReciever {
 			Timer.setTimeOut(1000, 2000, () -> {
 				if (getDrinkState() == Thirsty.this) {
 					if (angry) {
-						System.out.print("about to get angry");
+						System.out.println("about to get angry");
 						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
 						Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
 						Timer.setTimeOut(10, () -> {
