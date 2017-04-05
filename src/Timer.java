@@ -13,8 +13,10 @@ public class Timer {
 		setTimeOut((int) (Math.random() * (max - min)) + min, callback);
 	}
 
-	public static synchronized void setTimeOut(int timeOut, Runnable callback) {
-		timeOuts.add(new TimeOutEvent(timeOut, callback));
+	public static void setTimeOut(int timeOut, Runnable callback) {
+		synchronized (Timer.class) {
+			timeOuts.add(new TimeOutEvent(timeOut, callback));
+		}
 	}
 
 	public static class TimeOutEvent implements Comparable<TimeOutEvent>, Runnable {
