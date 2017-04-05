@@ -168,6 +168,8 @@ public class BottleManager implements MessageReciever {
 					setDrinkState(new NotThirsty());
 				}
 			});
+			FoodManager.getInstance().sleep();
+
 		}
 
 		@Override

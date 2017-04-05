@@ -28,7 +28,11 @@ public class FoodManager implements MessageReciever {
 	public void recieveMessageFrom(Message packet, Side neighbor) {
 		this.foodState.recieveMessageFrom(packet, neighbor);
 	}
-
+	
+	public void sleep(){
+		setFoodState(new Sleep());
+	}
+	
 	public static class ChopstickReqest extends Message {
 		private static final long serialVersionUID = 1L;
 

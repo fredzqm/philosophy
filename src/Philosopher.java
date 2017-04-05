@@ -31,11 +31,11 @@ public class Philosopher {
 		left = new Side(args[0], true);
 		right = new Side(args[1], false);
 
-//		FoodManager foodManager = FoodManager.getInstance();
+		FoodManager foodManager = FoodManager.getInstance();
 		BottleManager drinkManager = BottleManager.getInstance();
 
 		Server server = new Server();
-//		server.addMessageReciever(foodManager);
+		server.addMessageReciever(foodManager);
 		server.addMessageReciever(drinkManager);
 		server.startServer();
 
@@ -45,11 +45,11 @@ public class Philosopher {
 			String input = in.nextLine();
 			switch (input) {
 			case "thinking":
-//				foodManager.setFoodState(foodManager.new Thinking());
+				foodManager.setFoodState(foodManager.new Thinking());
 				drinkManager.setDrinkState(drinkManager.new NotThirsty());
 				break;
 			case "hungry":
-//				foodManager.setFoodState(foodManager.new Hungry());
+				foodManager.setFoodState(foodManager.new Hungry());
 				break;
 			case "thirsty":
 				drinkManager.setDrinkState(drinkManager.new Thirsty());
