@@ -16,7 +16,7 @@ public class Philosopher {
 		return left;
 	}
 
-	public static Side resoveSide(String ip) {
+	public static Side resolveSide(String ip) {
 		if (ip.equals(left.getIP())) {
 			return left;
 		} else if (ip.equals(right.getIP())) {

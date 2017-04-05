@@ -35,7 +35,7 @@ public class Server {
 						ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 						Message packet = (Message) in.readObject();
 						String ip = client.getInetAddress().getHostAddress();
-						neighbor = Philosopher.resoveSide(ip);
+						neighbor = Philosopher.resolveSide(ip);
 						if (verbose) {
 							System.out.println("\t\tget " + neighbor + " " + packet);
 						}
