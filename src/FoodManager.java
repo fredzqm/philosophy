@@ -4,24 +4,9 @@ import java.util.Set;
 public class FoodManager implements MessageReciever {
 	private State foodState;
 	private static FoodManager foodManager;
-	private volatile boolean leftResponed, rightResponed;
 
 	private FoodManager() {
-		leftResponed = false;
-		rightResponed = false;
 		this.setFoodState(new Thinking());
-	}
-
-	public void setResponed(boolean isLeft, boolean hasResponded) {
-		if (isLeft) {
-			leftResponed = hasResponded;
-		} else {
-			rightResponed = hasResponded;
-		}
-	}
-
-	public boolean getHasResponed(boolean isLeft) {
-		return isLeft ? leftResponed : rightResponed;
 	}
 
 	public static FoodManager getInstance() {
@@ -119,7 +104,26 @@ public class FoodManager implements MessageReciever {
 
 	public class Hungry implements State {
 		private final int REPEAT_TIME = 10;
+		private volatile boolean leftResponed, rightResponed;
+
 		private Set<Boolean> has;
+
+		public Hungry() {
+			leftResponed = false;
+			rightResponed = false;
+		}
+
+		public void setResponed(boolean isLeft, boolean hasResponded) {
+			if (isLeft) {
+				leftResponed = hasResponded;
+			} else {
+				rightResponed = hasResponded;
+			}
+		}
+
+		public boolean getHasResponed(boolean isLeft) {
+			return isLeft ? leftResponed : rightResponed;
+		}
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
@@ -134,9 +138,9 @@ public class FoodManager implements MessageReciever {
 			} else if (packet instanceof ChopstickResponse) {
 				ChopstickResponse resp = (ChopstickResponse) packet;
 				if (neighbor.isLeft()) {
-					FoodManager.getInstance().setResponed(true, true);
+					setResponed(true, true);
 				} else {
-					FoodManager.getInstance().setResponed(false, true);
+					setResponed(false, true);
 				}
 				if (resp.isAvailable()) {
 					has.add(neighbor.isLeft());
@@ -155,10 +159,10 @@ public class FoodManager implements MessageReciever {
 					setFoodState(new Dead());
 			});
 			Philosopher.getRight().talkTo(new ChopstickReqest());
-			FoodManager.getInstance().setResponed(false, false);
+			setResponed(false, false);
 
 			Philosopher.getLeft().talkTo(new ChopstickReqest());
-			FoodManager.getInstance().setResponed(true, false);
+			setResponed(true, false);
 			setUpCheckTimer();
 		}
 
@@ -167,12 +171,12 @@ public class FoodManager implements MessageReciever {
 				if (foodState == this) {
 					if (!has.contains(false)) {
 						Philosopher.getRight().talkTo(new ChopstickReqest());
-						FoodManager.getInstance().setResponed(false, false);
+						setResponed(false, false);
 						pickUpChopstick(false);
 					}
 					if (!has.contains(true)) {
 						Philosopher.getLeft().talkTo(new ChopstickReqest());
-						FoodManager.getInstance().setResponed(true, false);
+						setResponed(true, false);
 						pickUpChopstick(true);
 					}
 					setUpCheckTimer();
@@ -184,7 +188,7 @@ public class FoodManager implements MessageReciever {
 			Timer.setTimeOut((int) REPEAT_TIME / 2, new Runnable() {
 				@Override
 				public void run() {
-					if (!has.contains(isLeft) && !FoodManager.getInstance().getHasResponed(isLeft)) {
+					if (!has.contains(isLeft) && !getHasResponed(isLeft)) {
 						has.add(isLeft);
 						if (has.size() == 2)
 							setFoodState(new Eating());
