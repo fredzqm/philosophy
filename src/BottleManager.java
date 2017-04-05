@@ -138,13 +138,13 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am drinking");
 			hasBottle = true;
-			boolean isSleepy = Math.random() > 0.9;
-			if (isSleepy) {
-				BottleManager.getInstance().setDrinkState(new Sleep());
-			}
 			Timer.setTimeOut(300, 600, () -> {
 				if (getDrinkState() == this) {
-					setDrinkState(new NotThirsty());
+					if (Math.random() > 0.5) {
+						setDrinkState(new Sleep());
+					} else {
+						setDrinkState(new NotThirsty());
+					}
 					sendBottle(nextDir);
 				}
 			});
@@ -163,7 +163,7 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am sleeping");
 			hasBottle = false;
-			Timer.setTimeOut(1000, 10000, () -> {
+			Timer.setTimeOut(300, 800, () -> {
 				if (getDrinkState() == this) {
 					setDrinkState(new NotThirsty());
 				}
@@ -172,16 +172,13 @@ public class BottleManager implements MessageReciever {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
+			
 		}
 
-		@Override
 		public void recieveBottle(Side neighbor) {
 
 		}
 
-		public void recieveBottleHere() {
-
-		}
 	}
 
 	public class Thirsty extends AWAKEDrinkState {
@@ -218,7 +215,7 @@ public class BottleManager implements MessageReciever {
 
 		@Override
 		public void recieveBottle(Side neighbor) {
-			setDrinkState(new Drinking(neighbor));
+			setDrinkState(new Drinking(neighbor.getTheOtherSide()));
 		}
 
 		@Override
