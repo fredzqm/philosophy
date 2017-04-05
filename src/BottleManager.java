@@ -183,7 +183,7 @@ public class BottleManager implements MessageReciever {
 
 		private void setAngryTimer() {
 			angry = true;
-			Timer.setTimeOut(100, 200, () -> {
+			Timer.setTimeOut(1000, 2000, () -> {
 				if (getDrinkState() == this) {
 					if (angry) {
 						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
