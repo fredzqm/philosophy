@@ -1,7 +1,7 @@
 import java.util.PriorityQueue;
 
 public class Timer {
-	private final static int TIME_MULTIPLIER = 10;
+	private final static int TIME_MULTIPLIER = 3;
 	private final static PriorityQueue<TimeOutEvent> timeOuts;
 	private static int timer;
 
