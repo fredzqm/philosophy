@@ -86,10 +86,10 @@ public class BottleManager implements MessageReciever {
 				hasBottle = true;
 				recieveBottle(neighbor);
 			} else if (packet instanceof ACKBottle) {
-				reciveBottleACK();
+				hasBottle = false;
 			} else if (packet instanceof BottleSearch) {
 				int ttl = ((BottleSearch) packet).getTTL() - 1;
-				if (hasBottle)
+				if (hasBottle || this instanceof Drinking)
 					neighbor.talkTo(new BottleHere(NUM_OF_NODE));
 				else if (ttl != 0)
 					neighbor.getTheOtherSide().talkTo(new BottleSearch(ttl));
@@ -108,10 +108,6 @@ public class BottleManager implements MessageReciever {
 					drinkState.recieveBottle(neighbor.getTheOtherSide());
 				}
 			});
-		}
-
-		public void reciveBottleACK() {
-			hasBottle = false;
 		}
 
 		public abstract void recieveBottle(Side neighbor);
@@ -138,11 +134,6 @@ public class BottleManager implements MessageReciever {
 					sendBottle(nextDir);
 				}
 			});
-		}
-
-		@Override
-		public void reciveBottleACK() {
-			System.out.println("I am drinking, but recieved a bottleACK");
 		}
 
 		@Override
