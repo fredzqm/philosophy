@@ -207,7 +207,7 @@ public class BottleManager implements MessageReciever {
 
 		@Override
 		public void recieveBottle(Side neighbor) {
-			setDrinkState(new Drinking(neighbor.getTheOtherSide()));
+			setDrinkState(new Drinking(neighbor));
 		}
 
 		@Override
