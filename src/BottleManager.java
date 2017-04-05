@@ -199,12 +199,15 @@ public class BottleManager implements MessageReciever {
 						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
 						Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
 						Timer.setTimeOut(10, () -> {
-							if (getDrinkState() == Thirsty.this && angry) {
-								System.out.print("I am angry and ");
-								setDrinkState(new Drinking(Philosopher.getRight()));
-							} else {
-								setAngryTimer();
+							if (getDrinkState() == Thirsty.this) {
+								if (angry) {
+									System.out.print("I am angry and ");
+									setDrinkState(new Drinking(Philosopher.getRight()));
+								} else {
+									setAngryTimer();
+								}
 							}
+
 						});
 					} else {
 						setAngryTimer();
