@@ -104,7 +104,7 @@ public class BottleManager implements MessageReciever {
 		protected void sendBottle(Side neighbor) {
 			neighbor.getTheOtherSide().talkTo(new Bottle());
 			Timer.setTimeOut(SEND_BOTTLE_TIME_OUT, () -> {
-				if (hasBottle) {
+				if (hasBottle && !(getDrinkState() instanceof Drinking)) {
 					drinkState.recieveBottle(neighbor.getTheOtherSide());
 				}
 			});
@@ -168,10 +168,6 @@ public class BottleManager implements MessageReciever {
 
 		}
 
-		public void reciveBottleACK() {
-
-		}
-
 		public void recieveBottleHere() {
 
 		}
@@ -189,12 +185,13 @@ public class BottleManager implements MessageReciever {
 		private void setAngryTimer() {
 			angry = true;
 			Timer.setTimeOut(1000, 2000, () -> {
-				if (getDrinkState() == this) {
+				if (getDrinkState() == Thirsty.this) {
 					if (angry) {
+						System.out.print("about to get angry");
 						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
 						Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
 						Timer.setTimeOut(10, () -> {
-							if (getDrinkState() == this && angry) {
+							if (getDrinkState() == Thirsty.this && angry) {
 								System.out.print("I am angry and ");
 								setDrinkState(new Drinking(Philosopher.getRight()));
 							} else {
@@ -216,6 +213,7 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void recieveBottleHere() {
 			angry = false;
+			System.err.println("calmed down");
 		}
 	}
 
