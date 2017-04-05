@@ -25,6 +25,11 @@ public class BottleManager implements MessageReciever {
 
 	public static class Bottle extends Message {
 		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String toString() {
+			return "Here is the bottle";
+		}
 	}
 
 	public static class ACKBottle extends Message {
@@ -32,7 +37,7 @@ public class BottleManager implements MessageReciever {
 
 		@Override
 		public String toString() {
-			return "Here is the bottle";
+			return "I got the bottle";
 		}
 	}
 
