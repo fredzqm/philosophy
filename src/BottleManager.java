@@ -17,13 +17,13 @@ public class BottleManager implements MessageReciever {
 		return bottleManager;
 	}
 
-	public synchronized void setDrinkState(AWAKEDrinkState state) {
+	public void setDrinkState(AWAKEDrinkState state) {
 		this.drinkState = state;
 		this.drinkState.onStart();
 	}
 
 	@Override
-	public synchronized void recieveMessageFrom(Message packet, Side neighbor) {
+	public void recieveMessageFrom(Message packet, Side neighbor) {
 		synchronized (Timer.class) {
 			drinkState.recieveMessageFrom(packet, neighbor);
 		}
@@ -172,7 +172,7 @@ public class BottleManager implements MessageReciever {
 
 		@Override
 		public void recieveMessageFrom(Message packet, Side neighbor) {
-			
+
 		}
 
 		public void recieveBottle(Side neighbor) {
