@@ -17,16 +17,14 @@ public class BottleManager implements MessageReciever {
 		return bottleManager;
 	}
 
-	public void setDrinkState(AWAKEDrinkState state) {
+	public synchronized void setDrinkState(AWAKEDrinkState state) {
 		this.drinkState = state;
 		this.drinkState.onStart();
 	}
 
 	@Override
 	public synchronized void recieveMessageFrom(Message packet, Side neighbor) {
-		synchronized (Timer.class) {
-			drinkState.recieveMessageFrom(packet, neighbor);
-		}
+		drinkState.recieveMessageFrom(packet, neighbor);
 	}
 
 	public State getDrinkState() {
@@ -142,7 +140,7 @@ public class BottleManager implements MessageReciever {
 			hasBottle = true;
 			boolean isSleepy = Math.random() > 0.9;
 			if (isSleepy) {
-				//
+				BottleManager.getInstance().setDrinkState(new Sleep());
 			}
 			Timer.setTimeOut(300, 600, () -> {
 				if (getDrinkState() == this) {
@@ -164,6 +162,12 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am sleeping");
+			hasBottle = false;
+			Timer.setTimeOut(1000, 10000, () -> {
+				if (getDrinkState() == this) {
+					setDrinkState(new NotThirsty());
+				}
+			});
 		}
 
 		@Override
@@ -198,13 +202,11 @@ public class BottleManager implements MessageReciever {
 						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
 						Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
 						Timer.setTimeOut(10, () -> {
-							if (getDrinkState() == Thirsty.this) {
-								if (angry) {
-									System.out.print("I am angry and ");
-									setDrinkState(new Drinking(Philosopher.getRight()));
-								} else {
-									setAngryTimer();
-								}
+							if (getDrinkState() == Thirsty.this && angry) {
+								System.out.print("I am angry and ");
+								setDrinkState(new Drinking(Philosopher.getRight()));
+							} else {
+								setAngryTimer();
 							}
 						});
 					} else {
