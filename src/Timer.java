@@ -14,7 +14,9 @@ public class Timer {
 	}
 
 	public static void setTimeOut(int timeOut, Runnable callback) {
-		timeOuts.add(new TimeOutEvent(timeOut, callback));
+		synchronized (Timer.class) {
+			timeOuts.add(new TimeOutEvent(timeOut, callback));
+		}
 	}
 
 	public static class TimeOutEvent implements Comparable<TimeOutEvent>, Runnable {
@@ -47,9 +49,11 @@ public class Timer {
 			@Override
 			public void run() {
 				while (true) {
-					while (!timeOuts.isEmpty() && timeOuts.peek().timeLeft() == 0) {
-						TimeOutEvent next = timeOuts.poll();
-						next.run();
+					synchronized (Timer.class) {
+						while (!timeOuts.isEmpty() && timeOuts.peek().timeLeft() == 0) {
+							TimeOutEvent next = timeOuts.poll();
+							next.run();
+						}
 					}
 					timer++;
 					try {
