@@ -29,6 +29,11 @@ public class BottleManager implements MessageReciever {
 
 	public static class ACKBottle extends Message {
 		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String toString() {
+			return "Here is the bottle";
+		}
 	}
 
 	public static class BottleSearch extends Message {
@@ -41,6 +46,11 @@ public class BottleManager implements MessageReciever {
 
 		public int getTTL() {
 			return ttl;
+		}
+
+		@Override
+		public String toString() {
+			return "Where is the bottle?";
 		}
 	}
 
@@ -56,6 +66,10 @@ public class BottleManager implements MessageReciever {
 			return ttl;
 		}
 
+		@Override
+		public String toString() {
+			return "I have the bottle";
+		}
 	}
 
 	public abstract class AWAKEDrinkState implements State {
@@ -97,7 +111,8 @@ public class BottleManager implements MessageReciever {
 
 		public abstract void recieveBottle(Side neighbor);
 
-		public void recieveBottleHere() {}
+		public void recieveBottleHere() {
+		}
 
 	}
 
@@ -149,11 +164,11 @@ public class BottleManager implements MessageReciever {
 		}
 
 		public void reciveBottleACK() {
-			
+
 		}
 
 		public void recieveBottleHere() {
-			
+
 		}
 	}
 
@@ -168,7 +183,7 @@ public class BottleManager implements MessageReciever {
 
 		private void setAngryTimer() {
 			angry = true;
-			Timer.setTimeOut(10000, 20000, () -> {
+			Timer.setTimeOut(100, 200, () -> {
 				if (getDrinkState() == this) {
 					if (angry) {
 						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));

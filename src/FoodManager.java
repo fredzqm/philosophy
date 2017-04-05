@@ -19,6 +19,11 @@ public class FoodManager implements MessageReciever {
 
 	public static class ChopstickReqest extends Message {
 		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String toString() {
+			return "Do you have the chopstick?";
+		}
 	}
 
 	public static class ChopstickResponse extends Message {
@@ -31,6 +36,14 @@ public class FoodManager implements MessageReciever {
 
 		public boolean isAvailable() {
 			return isAvailable;
+		}
+
+		@Override
+		public String toString() {
+			if (isAvailable)
+				return "I am not using";
+			else
+				return "I am using it";
 		}
 	}
 

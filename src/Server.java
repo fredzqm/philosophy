@@ -9,7 +9,7 @@ import java.util.List;
 public class Server {
 	public static final int SERVER_PORT = 4848;
 	public static boolean verbose = true;
-	
+
 	private List<MessageReciever> recievers = new ArrayList<>();
 
 	public void addMessageReciever(MessageReciever foodManager) {
@@ -33,14 +33,14 @@ public class Server {
 						String ip = client.getInetAddress().getHostAddress();
 						Side neighbor = Philosopher.resoveSide(ip);
 						if (verbose) {
-							System.out.println("Recieving request from " + neighbor + " " + packet);
+							System.out.println("\t\tget " + neighbor + " " + packet);
 						}
 						for (MessageReciever mr : recievers)
 							mr.recieveMessageFrom(packet, neighbor);
 						client.close();
 					}
 				} catch (IOException | ClassNotFoundException e) {
-					throw new RuntimeException(e);
+					System.err.println(e.getMessage());
 				} finally {
 					try {
 						if (client != null)

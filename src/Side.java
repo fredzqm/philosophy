@@ -26,11 +26,11 @@ public class Side {
 			Socket s = new Socket(ip, Server.SERVER_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 			if (Server.verbose)
-				System.out.println("Sending request to " + this + " " + packet);
+				System.out.println("\t\tsend " + this + " " + packet);
 			out.writeObject(packet);
 			s.close();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			System.err.println(e.getMessage());
 		}
 	}
 
