@@ -16,6 +16,10 @@ public class FoodManager implements MessageReciever {
 		return foodManager;
 	}
 
+	public State getFoodState(){
+		return foodState;
+	}
+	
 	public void setFoodState(State state) {
 		this.foodState = state;
 		this.foodState.onStart();

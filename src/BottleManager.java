@@ -2,7 +2,7 @@ public class BottleManager implements MessageReciever {
 	public final int NUM_OF_NODE = 5;
 
 	public boolean hasBottle = false;
-	private static final int SEND_BOTTLE_TIME_OUT = 100;
+	private static final int SEND_BOTTLE_TIME_OUT = 10;
 	private AWAKEDrinkState drinkState;
 	private static BottleManager bottleManager;
 
@@ -87,6 +87,15 @@ public class BottleManager implements MessageReciever {
 		}
 	}
 
+	protected void sendBottle(Side neighbor) {
+		neighbor.getTheOtherSide().talkTo(new Bottle());
+		Timer.setTimeOut(SEND_BOTTLE_TIME_OUT, () -> {
+			if (hasBottle && !(getDrinkState() instanceof Drinking)) {
+				drinkState.recieveBottle(neighbor.getTheOtherSide());
+			}
+		});
+	}
+	
 	public abstract class AWAKEDrinkState implements State {
 
 		@Override
@@ -109,15 +118,6 @@ public class BottleManager implements MessageReciever {
 					neighbor.getTheOtherSide().talkTo(new BottleHere(ttl));
 				recieveBottleHere();
 			}
-		}
-
-		protected void sendBottle(Side neighbor) {
-			neighbor.getTheOtherSide().talkTo(new Bottle());
-			Timer.setTimeOut(SEND_BOTTLE_TIME_OUT, () -> {
-				if (hasBottle && !(getDrinkState() instanceof Drinking)) {
-					drinkState.recieveBottle(neighbor.getTheOtherSide());
-				}
-			});
 		}
 
 		public abstract void recieveBottle(Side neighbor);
@@ -233,8 +233,8 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am not thirsty");
-			Timer.setTimeOut(300, 1000, () -> {
-				if (getDrinkState() == this) {
+			Timer.setTimeOut(300, 600, () -> {
+				if (getDrinkState() == NotThirsty.this) {
 					setDrinkState(new Thirsty());
 				}
 			});

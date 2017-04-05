@@ -41,20 +41,18 @@ public class Timer {
 		}
 	}
 
-	private static synchronized void executeTimeOutEvents() {
-		while (!timeOuts.isEmpty() && timeOuts.peek().timeLeft() == 0) {
-			TimeOutEvent next = timeOuts.poll();
-			next.run();
-		}
-	}
-
 	static {
 		timeOuts = new PriorityQueue<>();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
-					executeTimeOutEvents();
+					synchronized (Timer.class) {
+						while (!timeOuts.isEmpty() && timeOuts.peek().timeLeft() == 0) {
+							TimeOutEvent next = timeOuts.poll();
+							next.run();
+						}
+					}
 					timer++;
 					try {
 						Thread.sleep(TIME_MULTIPLIER);
