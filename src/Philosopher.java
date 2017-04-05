@@ -31,12 +31,12 @@ public class Philosopher {
 		left = new Side(args[0], true);
 		right = new Side(args[1], false);
 
-//		FoodManager foodManager = FoodManager.getInstance();
-		BottleManager drinkManager = BottleManager.getInstance();
+		FoodManager foodManager = FoodManager.getInstance();
+//		BottleManager drinkManager = BottleManager.getInstance();
 
 		Server server = new Server();
-//		server.addMessageReciever(foodManager);
-		server.addMessageReciever(drinkManager);
+		server.addMessageReciever(foodManager);
+//		server.addMessageReciever(drinkManager);
 		server.startServer();
 
 		@SuppressWarnings("resource")
@@ -45,14 +45,14 @@ public class Philosopher {
 			String input = in.nextLine();
 			switch (input) {
 			case "thinking":
-//				foodManager.setFoodState(foodManager.new Thinking());
-				drinkManager.setDrinkState(drinkManager.new NotThirsty());
+				foodManager.setFoodState(foodManager.new Thinking());
+//				drinkManager.setDrinkState(drinkManager.new NotThirsty());
 				break;
 			case "hungry":
-//				foodManager.setFoodState(foodManager.new Hungry());
+				foodManager.setFoodState(foodManager.new Hungry());
 				break;
 			case "thirsty":
-				drinkManager.setDrinkState(drinkManager.new Thirsty());
+//				drinkManager.setDrinkState(drinkManager.new Thirsty());
 			default:
 				System.out.println("Revieved event: " + input);
 				break;
