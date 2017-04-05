@@ -91,7 +91,7 @@ public class BottleManager implements MessageReciever {
 		neighbor.talkTo(new Bottle());
 		Timer.setTimeOut(SEND_BOTTLE_TIME_OUT, () -> {
 			if (hasBottle && !(getDrinkState() instanceof Drinking)) {
-				drinkState.recieveBottle(neighbor.getTheOtherSide());
+				drinkState.recieveBottle(neighbor);
 			}
 		});
 	}
