@@ -163,13 +163,12 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am sleeping");
 			hasBottle = false;
-			Timer.setTimeOut(300, 800, () -> {
-				if (getDrinkState() == this) {
-					setDrinkState(new NotThirsty());
-				}
-			});
-			FoodManager.getInstance().sleep();
-
+//			Timer.setTimeOut(300, 800, () -> {
+//				if (getDrinkState() == this) {
+//					setDrinkState(new NotThirsty());
+//				}
+//			});
+//			FoodManager.getInstance().sleep();
 		}
 
 		@Override
