@@ -237,11 +237,11 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am not thirsty");
-			Timer.setTimeOut(300, 600, () -> {
-				if (getDrinkState() == NotThirsty.this) {
-					setDrinkState(new Thirsty());
-				}
-			});
+//			Timer.setTimeOut(300, 600, () -> {
+//				if (getDrinkState() == NotThirsty.this) {
+//					setDrinkState(new Thirsty());
+//				}
+//			});
 		}
 
 		public void recieveBottle(Side neighbor) {
