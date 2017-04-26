@@ -138,16 +138,16 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am drinking");
 			hasBottle = true;
-			Timer.setTimeOut(300, 600, () -> {
-				if (getDrinkState() == this) {
-					if (Math.random() > 0.5) {
-						setDrinkState(new Sleep());
-					} else {
-						setDrinkState(new NotThirsty());
-					}
-					sendBottle(nextDir);
-				}
-			});
+//			Timer.setTimeOut(300, 600, () -> {
+//				if (getDrinkState() == this) {
+//					if (Math.random() > 0.5) {
+//						setDrinkState(new Sleep());
+//					} else {
+//						setDrinkState(new NotThirsty());
+//					}
+//					sendBottle(nextDir);
+//				}
+//			});
 		}
 
 		@Override

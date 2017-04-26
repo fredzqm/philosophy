@@ -53,6 +53,11 @@ public class Philosopher {
 				break;
 			case "thirsty":
 				drinkManager.setDrinkState(drinkManager.new Thirsty());
+			case "notThirsty":
+				drinkManager.setDrinkState(drinkManager.new NotThirsty());
+			case "sleep":
+				drinkManager.setDrinkState(drinkManager.new Sleep());
+				break;
 			default:
 				System.out.println("Revieved event: " + input);
 				break;
