@@ -18,8 +18,6 @@ public class BottleManager implements MessageReciever {
 	}
 
 	public void setDrinkState(AWAKEDrinkState state) {
-		if (state instanceof NotThirsty)
-			this.drinkState = state;
 		this.drinkState.onExit();
 		this.drinkState = state;
 		this.drinkState.onStart();
@@ -205,7 +203,7 @@ public class BottleManager implements MessageReciever {
 
 		private void setAngryTimer() {
 			angry = true;
-			Timer.setTimeOut(1000, 2000, () -> {
+			Timer.setTimeOut(1000, () -> {
 				if (getDrinkState() == Thirsty.this) {
 					if (angry) {
 						if (Server.verbose)
