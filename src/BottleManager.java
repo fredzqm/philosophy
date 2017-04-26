@@ -20,6 +20,7 @@ public class BottleManager implements MessageReciever {
 	public void setDrinkState(AWAKEDrinkState state) {
 		if (state instanceof NotThirsty)
 			this.drinkState = state;
+		this.drinkState.onExit();
 		this.drinkState = state;
 		this.drinkState.onStart();
 	}
@@ -125,8 +126,12 @@ public class BottleManager implements MessageReciever {
 		public abstract void recieveBottle(Side neighbor);
 
 		public void recieveBottleHere() {
+
 		}
 
+		public void onExit() {
+
+		}
 	}
 
 	public class Drinking extends AWAKEDrinkState {
@@ -140,21 +145,26 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am drinking");
 			hasBottle = true;
-//			Timer.setTimeOut(300, 600, () -> {
-//				if (getDrinkState() == this) {
-//					if (Math.random() > 0.5) {
-//						setDrinkState(new Sleep());
-//					} else {
-//						setDrinkState(new NotThirsty());
-//					}
-//					sendBottle(nextDir);
-//				}
-//			});
+			// Timer.setTimeOut(300, 600, () -> {
+			// if (getDrinkState() == this) {
+			// if (Math.random() > 0.5) {
+			// setDrinkState(new Sleep());
+			// } else {
+			// setDrinkState(new NotThirsty());
+			// }
+			//
+			// }
+			// });
 		}
 
 		@Override
 		public void recieveBottle(Side neighbor) {
 			System.out.println("I am drinking, but recieved a bottle from " + neighbor);
+		}
+
+		@Override
+		public void onExit() {
+			sendBottle(nextDir);
 		}
 
 	}
@@ -165,12 +175,12 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am sleeping");
 			hasBottle = false;
-//			Timer.setTimeOut(300, 800, () -> {
-//				if (getDrinkState() == this) {
-//					setDrinkState(new NotThirsty());
-//				}
-//			});
-//			FoodManager.getInstance().sleep();
+			// Timer.setTimeOut(300, 800, () -> {
+			// if (getDrinkState() == this) {
+			// setDrinkState(new NotThirsty());
+			// }
+			// });
+			// FoodManager.getInstance().sleep();
 		}
 
 		@Override
@@ -238,11 +248,11 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am not thirsty");
-//			Timer.setTimeOut(300, 600, () -> {
-//				if (getDrinkState() == NotThirsty.this) {
-//					setDrinkState(new Thirsty());
-//				}
-//			});
+			// Timer.setTimeOut(300, 600, () -> {
+			// if (getDrinkState() == NotThirsty.this) {
+			// setDrinkState(new Thirsty());
+			// }
+			// });
 		}
 
 		public void recieveBottle(Side neighbor) {
