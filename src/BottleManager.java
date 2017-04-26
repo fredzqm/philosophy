@@ -18,7 +18,8 @@ public class BottleManager implements MessageReciever {
 	}
 
 	public void setDrinkState(AWAKEDrinkState state) {
-		this.drinkState.onExit();
+		if (this.drinkState != null)
+			this.drinkState.onExit();
 		this.drinkState = state;
 		this.drinkState.onStart();
 	}
