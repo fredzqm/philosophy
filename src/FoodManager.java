@@ -210,10 +210,10 @@ public class FoodManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am sleeping");
 
-			Timer.setTimeOut(300, 800, () -> {
-				if (foodState == this)
-					setFoodState(new Thinking());
-			});
+//			Timer.setTimeOut(300, 800, () -> {
+//				if (foodState == this)
+//					setFoodState(new Thinking());
+//			});
 		}
 	}
 
