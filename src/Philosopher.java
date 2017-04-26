@@ -53,6 +53,7 @@ public class Philosopher {
 				break;
 			case "thirsty":
 				drinkManager.setDrinkState(drinkManager.new Thirsty());
+				break;
 			case "notThirsty":
 				drinkManager.setDrinkState(drinkManager.new NotThirsty());
 			case "sleep":
