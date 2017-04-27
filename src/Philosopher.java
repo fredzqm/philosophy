@@ -61,7 +61,7 @@ public class Philosopher {
 				drinkManager.setDrinkState(drinkManager.new Sleep());
 				break;
 			default:
-				System.out.println("Revieved event: " + input);
+				System.out.println("Revieved event: " + input + " current state: " + drinkManager.getDrinkState());
 				break;
 			}
 		}
