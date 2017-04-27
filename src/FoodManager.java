@@ -2,6 +2,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class FoodManager implements MessageReciever {
+	public final boolean AUTOMATIC = false;
 	private State foodState;
 	private static FoodManager foodManager;
 
@@ -75,10 +76,12 @@ public class FoodManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am eating");
-			Timer.setTimeOut(1000, 2000, () -> {
-				if (foodState == this)
-					setFoodState(new Thinking());
-			});
+			if (AUTOMATIC) {
+				Timer.setTimeOut(1000, 2000, () -> {
+					if (foodState == this)
+						setFoodState(new Thinking());
+				});
+			}
 		}
 	}
 
@@ -94,10 +97,12 @@ public class FoodManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am thinking");
-			Timer.setTimeOut(1000, 3000, () -> {
-				if (foodState == this)
-					setFoodState(new Hungry());
-			});
+			if (AUTOMATIC) {
+				Timer.setTimeOut(1000, 3000, () -> {
+					if (foodState == this)
+						setFoodState(new Hungry());
+				});
+			}
 		}
 
 	}
@@ -209,11 +214,12 @@ public class FoodManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am sleeping");
-
-//			Timer.setTimeOut(300, 800, () -> {
-//				if (foodState == this)
-//					setFoodState(new Thinking());
-//			});
+			if (AUTOMATIC) {
+				Timer.setTimeOut(300, 800, () -> {
+					if (foodState == this)
+						setFoodState(new Thinking());
+				});
+			}
 		}
 	}
 
