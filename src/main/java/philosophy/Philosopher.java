@@ -1,4 +1,7 @@
 package philosophy;
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
@@ -8,6 +11,7 @@ import java.util.Scanner;
 public class Philosopher {
 
 	private static Side left, right;
+	private static String ip;
 
 	public static Side getRight() {
 		return right;
@@ -28,10 +32,12 @@ public class Philosopher {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnknownHostException, SocketException {
 		left = new Side(args[0], true);
 		right = new Side(args[1], false);
-
+		ip = IPFinder.getPublicIPv4();
+		System.out.println("IP is " + ip);
+		
 		FoodManager foodManager = FoodManager.getInstance();
 		BottleManager drinkManager = BottleManager.getInstance();
 

@@ -19,8 +19,6 @@ public class IPFinder {
 				// logger.trace("IP address "+currentAddress+ " found");
 				if (!i.isSiteLocalAddress() && !i.isLoopbackAddress() && validate(currentAddress)) {
 					ipToReturn = currentAddress;
-				} else {
-					System.out.println("Address not validated as public IPv4");
 				}
 
 			}
