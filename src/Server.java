@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Server {
 	public static final int SERVER_PORT = 4848;
-	public static boolean verbose = false;
+	public static boolean verbose = true;
 
 	private List<MessageReciever> recievers = new ArrayList<>();
 
