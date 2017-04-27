@@ -23,13 +23,9 @@ public class SideMap implements DataMonitorListener, Watcher {
 			throw new RuntimeException(e);
 		}
 		this.znode = znode;
-		
+
 		// create a node at the root
-		try {
-			this.zookeeper.create(this.znode, "".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-		} catch (KeeperException | InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+		this.put("", "-");
 	}
 
 	public boolean containsKey(String key) {
@@ -49,18 +45,12 @@ public class SideMap implements DataMonitorListener, Watcher {
 		}
 	}
 
-	// public void createZnode(String path, String message) throws
-	// KeeperException, InterruptedException {
-	// zk.create(path, message.getBytes(), Ids.OPEN_ACL_UNSAFE,
-	// CreateMode.PERSISTENT);
-	// }
-
 	public void put(String key, String data) {
 		try {
 			if (!this.containsKey(key)) {
 				this.zookeeper.create(getChildZnode(key), data.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 			} else {
-				this.zookeeper.setData(getChildZnode(key), "data".getBytes(),
+				this.zookeeper.setData(getChildZnode(key), data.getBytes(),
 						this.zookeeper.exists(getChildZnode(key), true).getVersion());
 			}
 		} catch (InterruptedException | KeeperException e) {
@@ -69,6 +59,8 @@ public class SideMap implements DataMonitorListener, Watcher {
 	}
 
 	private String getChildZnode(String key) {
+		if (key == null || key.length() == 0)
+			return this.znode;
 		return this.znode + "/" + key;
 	}
 

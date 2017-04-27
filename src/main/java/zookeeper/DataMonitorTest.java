@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DataMonitorTest  {
-	private static final String ZOOKEEPER_ADDR = "137.112.89.141:2181";
+	private static final String ZOOKEEPER_ADDR = "localhost:2181";
 
 	@Before
 	public void setUp() {
@@ -15,12 +15,19 @@ public class DataMonitorTest  {
 	
 	@Test
 	public void getAndPut() {
-		SideMap map = new SideMap(ZOOKEEPER_ADDR, "/te");
-		
-		assertFalse(map.containsKey("a"));
+		SideMap map = new SideMap(ZOOKEEPER_ADDR, "/tea");
 		
 		map.put("a", "data");
 		assertTrue(map.containsKey("a"));
 		assertEquals("data", map.get("a"));
+	}
+	
+	@Test
+	public void getAndPut2() {
+		SideMap map = new SideMap(ZOOKEEPER_ADDR, "/tea");
+		
+		map.put("xx", "yyy");
+		assertTrue(map.containsKey("xx"));
+		assertEquals("yyy", map.get("xx"));
 	}
 }
