@@ -1,3 +1,5 @@
+package zookeeper;
+
 
 /**
  * A simple class that monitors the data and existence of a ZooKeeper

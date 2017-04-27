@@ -1,3 +1,5 @@
+package zookeeper;
+
 
 /**
  * A simple example program to use DataMonitor to start and
