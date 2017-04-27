@@ -1,3 +1,4 @@
+package philosophy;
 public class BottleManager implements MessageReciever {
 	public final int NUM_OF_NODE = 5;
 	public final boolean AUTOMATIC = false;

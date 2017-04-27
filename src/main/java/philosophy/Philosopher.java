@@ -1,3 +1,4 @@
+package philosophy;
 import java.util.Scanner;
 
 /**

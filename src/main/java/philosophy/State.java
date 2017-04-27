@@ -1,3 +1,4 @@
+package philosophy;
 
 public interface State extends MessageReciever {
 	/**
