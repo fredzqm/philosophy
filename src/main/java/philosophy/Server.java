@@ -1,4 +1,5 @@
 package philosophy;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
@@ -10,8 +11,13 @@ import java.util.List;
 public class Server {
 	public static final int SERVER_PORT = 4848;
 	public static boolean verbose = true;
-
+	
 	private List<MessageReciever> recievers = new ArrayList<>();
+	private String ip;
+
+	public Server(String myIP) {
+		this.ip = myIP;
+	}
 
 	public void addMessageReciever(MessageReciever foodManager) {
 		recievers.add(foodManager);

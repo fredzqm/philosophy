@@ -41,7 +41,7 @@ public class Philosopher {
 		FoodManager foodManager = FoodManager.getInstance();
 		BottleManager drinkManager = BottleManager.getInstance();
 
-		Server server = new Server();
+		Server server = new Server(ip);
 		server.addMessageReciever(foodManager);
 		server.addMessageReciever(drinkManager);
 		server.startServer();
