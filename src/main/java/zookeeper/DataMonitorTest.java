@@ -15,7 +15,7 @@ public class DataMonitorTest  {
 	
 	@Test
 	public void getAndPut() {
-		SideMap map = new SideMap(ZOOKEEPER_ADDR, "/test/childfa");
+		SideMap map = new SideMap(ZOOKEEPER_ADDR, "/te");
 		
 		assertFalse(map.containsKey("a"));
 		

@@ -23,10 +23,13 @@ public class SideMap implements DataMonitorListener, Watcher {
 			throw new RuntimeException(e);
 		}
 		this.znode = znode;
-		// throw KeeperException.create(KeeperException.Code.get(r.getErr()),
-		// clientPath);
-		// dm = new DataMonitor(this.zookeeper, znode, null, this);
-
+		
+		// create a node at the root
+		try {
+			this.zookeeper.create(this.znode, "".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+		} catch (KeeperException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public boolean containsKey(String key) {
@@ -46,15 +49,16 @@ public class SideMap implements DataMonitorListener, Watcher {
 		}
 	}
 
-//	public void createZnode(String path, String message) throws KeeperException, InterruptedException {
-//		zk.create(path, message.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-//	}
+	// public void createZnode(String path, String message) throws
+	// KeeperException, InterruptedException {
+	// zk.create(path, message.getBytes(), Ids.OPEN_ACL_UNSAFE,
+	// CreateMode.PERSISTENT);
+	// }
 
 	public void put(String key, String data) {
 		try {
 			if (!this.containsKey(key)) {
-				this.zookeeper.create(getChildZnode(key), data.getBytes(), Ids.OPEN_ACL_UNSAFE,
-						CreateMode.PERSISTENT);
+				this.zookeeper.create(getChildZnode(key), data.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 			} else {
 				this.zookeeper.setData(getChildZnode(key), "data".getBytes(),
 						this.zookeeper.exists(getChildZnode(key), true).getVersion());
