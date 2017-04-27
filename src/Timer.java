@@ -1,11 +1,8 @@
 import java.util.PriorityQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class Timer {
 	private final static int TIME_MULTIPLIER = 3;
-	private final static PriorityQueue<TimeOutEvent> waiting;
-	private final static BlockingQueue<TimeOutEvent> ready;
+	private final static PriorityQueue<TimeOutEvent> timeOuts;
 	private static int timer;
 
 	public static int getTime() {
@@ -18,7 +15,7 @@ public class Timer {
 
 	public static void setTimeOut(int timeOut, Runnable callback) {
 		synchronized (Timer.class) {
-			waiting.add(new TimeOutEvent(timeOut, callback));
+			timeOuts.add(new TimeOutEvent(timeOut, callback));
 		}
 	}
 
@@ -47,14 +44,16 @@ public class Timer {
 	}
 
 	static {
-		waiting = new PriorityQueue<>();
-		ready = new LinkedBlockingDeque<>();
+		timeOuts = new PriorityQueue<>();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
-					while (!waiting.isEmpty() && waiting.peek().timeLeft() == 0) {
-						ready.add(waiting.poll());
+					synchronized (Timer.class) {
+						while (!timeOuts.isEmpty() && timeOuts.peek().timeLeft() == 0) {
+							TimeOutEvent next = timeOuts.poll();
+							next.run();
+						}
 					}
 					timer++;
 					try {
@@ -65,23 +64,6 @@ public class Timer {
 				}
 			}
 
-		}).start();
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (true) {
-					TimeOutEvent x;
-					try {
-						x = ready.take();
-						synchronized (Timer.class) {
-							x.run();
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
 		}).start();
 	}
 
