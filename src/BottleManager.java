@@ -1,5 +1,6 @@
 public class BottleManager implements MessageReciever {
 	public final int NUM_OF_NODE = 5;
+	public final boolean AUTOMATIC = false;
 
 	public boolean hasBottle = false;
 	private static final int SEND_BOTTLE_TIME_OUT = 10;
@@ -143,16 +144,18 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am drinking");
 			hasBottle = true;
-			// Timer.setTimeOut(300, 600, () -> {
-			// if (getDrinkState() == this) {
-			// if (Math.random() > 0.5) {
-			// setDrinkState(new Sleep());
-			// } else {
-			// setDrinkState(new NotThirsty());
-			// }
-			//
-			// }
-			// });
+			if (AUTOMATIC) {
+				Timer.setTimeOut(300, 600, () -> {
+					if (getDrinkState() == this) {
+						if (Math.random() > 0.5) {
+							setDrinkState(new Sleep());
+						} else {
+							setDrinkState(new NotThirsty());
+						}
+
+					}
+				});
+			}
 		}
 
 		@Override
@@ -173,12 +176,14 @@ public class BottleManager implements MessageReciever {
 		public void onStart() {
 			System.out.println("I am sleeping");
 			hasBottle = false;
-			// Timer.setTimeOut(300, 800, () -> {
-			// if (getDrinkState() == this) {
-			// setDrinkState(new NotThirsty());
-			// }
-			// });
-			// FoodManager.getInstance().sleep();
+			if (AUTOMATIC) {
+				Timer.setTimeOut(300, 800, () -> {
+					if (getDrinkState() == this) {
+						setDrinkState(new NotThirsty());
+					}
+				});
+				FoodManager.getInstance().sleep();
+			}
 		}
 
 		@Override
@@ -246,11 +251,14 @@ public class BottleManager implements MessageReciever {
 		@Override
 		public void onStart() {
 			System.out.println("I am not thirsty");
-			// Timer.setTimeOut(300, 600, () -> {
-			// if (getDrinkState() == NotThirsty.this) {
-			// setDrinkState(new Thirsty());
-			// }
-			// });
+
+			if (AUTOMATIC) {
+				Timer.setTimeOut(300, 600, () -> {
+					if (getDrinkState() == NotThirsty.this) {
+						setDrinkState(new Thirsty());
+					}
+				});
+			}
 		}
 
 		public void recieveBottle(Side neighbor) {
