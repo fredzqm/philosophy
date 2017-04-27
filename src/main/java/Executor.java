@@ -1,11 +1,12 @@
-	/**
-	 * A simple example program to use DataMonitor to start and
-	 * stop executables based on a znode. The program watches the
-	 * specified znode and saves the data that corresponds to the
-	 * znode in the filesystem. It also starts the specified program
-	 * with the specified arguments when the znode exists and kills
-	 * the program if the znode goes away.
-	 */
+
+/**
+ * A simple example program to use DataMonitor to start and
+ * stop executables based on a znode. The program watches the
+ * specified znode and saves the data that corresponds to the
+ * znode in the filesystem. It also starts the specified program
+ * with the specified arguments when the znode exists and kills
+ * the program if the znode goes away.
+ */
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -22,6 +23,12 @@ public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListe
 	public Executor(String hostPort, String znode) throws KeeperException, IOException {
 		zk = new ZooKeeper(hostPort, 2181, this);
 		dm = new DataMonitor(zk, znode, null, this);
+
+		try {
+			zk.setData("/test", "ahfuiewarf".getBytes(), zk.exists("/test", true).getVersion());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -32,6 +39,7 @@ public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListe
 		String znode = "/test";
 		try {
 			new Executor(hostPort, znode).run();
+
 			System.out.println("End of program");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,9 +58,7 @@ public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListe
 	public void run() {
 		try {
 			synchronized (this) {
-				while (!dm.dead) {
-					wait();
-				}
+				wait();
 			}
 		} catch (InterruptedException e) {
 		}
@@ -64,44 +70,7 @@ public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListe
 		}
 	}
 
-	public void exists(byte[] data) {
-		System.out.println("Recieved Data: "  + Arrays.toString(data));
-		System.out.println("\t\t"  + new String(data));
-//		if (data == null) {
-//			if (child != null) {
-//				System.out.println("Killing process");
-//				child.destroy();
-//				try {
-//					child.waitFor();
-//				} catch (InterruptedException e) {
-//				}
-//			}
-//			child = null;
-//		} else {
-//			if (child != null) {
-//				System.out.println("Stopping child");
-//				child.destroy();
-//				try {
-//					child.waitFor();
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			try {
-//				FileOutputStream fos = new FileOutputStream(filename);
-//				fos.write(data);
-//				fos.close();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			try {
-//				System.out.println("Starting child");
-//				child = Runtime.getRuntime().exec(exec);
-//				new StreamWriter(child.getInputStream(), System.out);
-//				new StreamWriter(child.getErrorStream(), System.err);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
+	public void exists(String data) {
+		System.out.println(data);
 	}
 }
