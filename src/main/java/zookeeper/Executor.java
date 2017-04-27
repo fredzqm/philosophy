@@ -1,6 +1,5 @@
 package zookeeper;
 
-
 /**
  * A simple example program to use DataMonitor to start and
  * stop executables based on a znode. The program watches the
@@ -17,9 +16,9 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListener {
-	String znode;
-	DataMonitor dm;
-	ZooKeeper zk;
+	private String znode;
+	private DataMonitor dm;
+	private ZooKeeper zk;
 
 	public Executor(String hostPort, String znode) throws KeeperException, IOException {
 		zk = new ZooKeeper(hostPort, 2181, this);
