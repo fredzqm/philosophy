@@ -8,7 +8,6 @@
  * the program if the znode goes away.
  */
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;

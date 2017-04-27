@@ -61,7 +61,6 @@ public class DataMonitor implements Watcher, StatCallback {
 				break;
 			case Expired:
 				// It's all over
-				dead = true;
 				listener.closing(KeeperException.Code.SessionExpired);
 				break;
 			}
