@@ -209,14 +209,14 @@ public class BottleManager implements MessageReciever {
 
 		private void setAngryTimer() {
 			angry = true;
-			Timer.setTimeOut(1000, () -> {
+			Timer.setTimeOut(700, () -> {
 				if (getDrinkState() == Thirsty.this) {
 					if (angry) {
 						if (Server.verbose)
 							System.out.println("about to get angry");
 						Philosopher.getLeft().talkTo(new BottleSearch(NUM_OF_NODE));
 						Philosopher.getRight().talkTo(new BottleSearch(NUM_OF_NODE));
-						Timer.setTimeOut(10, () -> {
+						Timer.setTimeOut(100, () -> {
 							if (getDrinkState() == Thirsty.this) {
 								if (angry) {
 									System.out.print("I am angry and ");
