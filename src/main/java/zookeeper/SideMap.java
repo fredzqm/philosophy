@@ -9,11 +9,8 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 
-import zookeeper.DataMonitor.DataMonitorListener;
-
-public class SideMap implements DataMonitorListener, Watcher {
+public class SideMap implements Watcher {
 	private ZooKeeper zookeeper;
-	// private DataMonitor dm;
 	private String znode;
 
 	public SideMap(String connectStr, String znode) {
@@ -23,8 +20,6 @@ public class SideMap implements DataMonitorListener, Watcher {
 			throw new RuntimeException(e);
 		}
 		this.znode = znode;
-
-		// create a node at the root
 		this.put("", "-");
 	}
 
@@ -69,19 +64,8 @@ public class SideMap implements DataMonitorListener, Watcher {
 	}
 
 	@Override
-	public void exists(String data) {
-
-	}
-
-	@Override
-	public void closing(int rc) {
-
-	}
-
-	@Override
 	public void process(WatchedEvent event) {
-		// TODO Auto-generated method stub
-
+		System.out.println("event: "+event);
 	}
 
 }

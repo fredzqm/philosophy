@@ -1,4 +1,4 @@
-package philosophy;
+package philosophyOld;
 import java.util.PriorityQueue;
 
 public class Timer {

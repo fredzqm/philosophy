@@ -1,4 +1,4 @@
-package philosophy;
+package philosophyOld;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;

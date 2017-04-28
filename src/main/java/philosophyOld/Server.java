@@ -1,4 +1,4 @@
-package philosophy;
+package philosophyOld;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
