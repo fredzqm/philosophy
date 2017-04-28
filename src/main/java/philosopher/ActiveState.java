@@ -92,10 +92,10 @@ public class ActiveState extends PState {
 			ls.add(philospher.getLeft());
 			ls.add(philospher.getRight());
 			Collections.sort(ls);
-			while (!ls.get(0).holdingChopstick()) {
+			while (ls.get(0).holdingChopstick()) {
 			}
 			philospher.getMyself().hasOneChopstick();
-			while (!ls.get(1).holdingChopstick()) {
+			while (ls.get(1).holdingChopstick()) {
 			}
 			switchFoodState(new Eating());
 		}
