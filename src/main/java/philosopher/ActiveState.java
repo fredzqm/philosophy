@@ -1,6 +1,8 @@
 package philosopher;
 
-import philosophyOld.FoodManager.Thinking;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ActiveState extends PState {
 	private Philosopher philospher;
@@ -46,6 +48,16 @@ public class ActiveState extends PState {
 
 	public class NotHungry extends FoodState {
 
+		@Override
+		public void onStart() {
+			super.onStart();
+			if (Philosopher.automatic) {
+				Timer.setTimeOut(100, 800, () -> {
+					if (NotHungry.this.active)
+						switchFoodState(new NotHungry());
+				});
+			}
+		}
 	}
 
 	public class Hungry extends FoodState {
@@ -53,29 +65,44 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
-			Timer.setTimeOut(100, 800, () -> {
-				if (foodState == this)
-					switchFoodState(new NotHungry());
-			});
-			
-			Player left = philospher.getLeft();
-			while (!left.holdingChopstick()) {
-				
+			if (Philosopher.automatic) {
+				Timer.setTimeOut(100, 800, () -> {
+					if (Hungry.this.active)
+						switchFoodState(new NotHungry());
+				});
 			}
-			Player right = philospher.getRight();
-			while (!right.holdingChopstick()) {
-				
+			List<Player> ls = new ArrayList<>();
+			ls.add(philospher.getLeft());
+			ls.add(philospher.getRight());
+			Collections.sort(ls);
+			while (!ls.get(0).holdingChopstick()) {
 			}
-			// while (left.isEating() || right.isEating()) {
-			//
-			// }
-
-
-
+			philospher.getMyself().hasOneChopstick();
+			while (!ls.get(1).holdingChopstick()) {
+			}
+			philospher.getMyself().startEating();
+			switchFoodState(new Eating());
 		}
 	}
 
 	public class Eating extends FoodState {
+
+		@Override
+		public void onStart() {
+			super.onStart();
+			if (Philosopher.automatic) {
+				Timer.setTimeOut(100, 800, () -> {
+					if (Eating.this.active)
+						switchFoodState(new NotHungry());
+				});
+			}
+		}
+
+		@Override
+		public void onExit() {
+			philospher.getMyself().finishEating();
+			super.onExit();
+		}
 
 	}
 
