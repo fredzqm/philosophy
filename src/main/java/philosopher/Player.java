@@ -37,7 +37,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	private String getEastPath() {
-		return ip + "/eating";
+		return ip + "eating";
 	}
 	
 	
