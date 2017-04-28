@@ -40,6 +40,4 @@ public class Player implements Comparable<Player> {
 		return ip + "eating";
 	}
 	
-	
-
 }

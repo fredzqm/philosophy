@@ -23,6 +23,10 @@ public class Philosopher {
 		this.myself = new Player(ip);
 		this.left = new Player(left);
 		this.right = new Player(right);
+		
+		this.dropTheBottle();
+		this.getMyself().finishEating();
+		
 		this.switchTo(new ActiveState(this));
 	}
 
