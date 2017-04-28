@@ -10,16 +10,17 @@ import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 
 public class SideMap implements Watcher {
-	private ZooKeeper zookeeper;
-	private String znode;
+	private static final String ZOOKEEPER_ADDR = "localhost:2181";
+	private static SideMap map;
 
-	public SideMap(String connectStr, String znode) {
+	private ZooKeeper zookeeper;
+
+	private SideMap(String connectStr) {
 		try {
 			this.zookeeper = new ZooKeeper(connectStr, 2181, this);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		this.znode = znode;
 		this.put("", "-");
 	}
 
@@ -54,18 +55,31 @@ public class SideMap implements Watcher {
 	}
 
 	private String getChildZnode(String key) {
-		if (key == null || key.length() == 0)
-			return this.znode;
-		return this.znode + "/" + key;
+		return "/" + key;
 	}
 
-	public String remove(Object arg0) {
-		return null;
+	public void remove(String key) {
+		try {
+			if (this.containsKey(key))
+				this.zookeeper.delete(getChildZnode(key), this.zookeeper.exists(getChildZnode(key), true).getVersion());
+		} catch (InterruptedException | KeeperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void process(WatchedEvent event) {
-		System.out.println("event: "+event);
+		System.out.println("event: " + event);
 	}
 
+	public static SideMap getInstance() {
+		if (map == null) {
+			synchronized (SideMap.class) {
+				if (map == null) {
+					map = new SideMap(ZOOKEEPER_ADDR);
+				}
+			}
+		}
+		return map;
+	}
 }

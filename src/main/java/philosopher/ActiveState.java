@@ -1,5 +1,7 @@
 package philosopher;
 
+import philosophyOld.FoodManager.Thinking;
+
 public class ActiveState extends PState {
 	private Philosopher philospher;
 	private DrinkState drinkState;
@@ -7,8 +9,8 @@ public class ActiveState extends PState {
 
 	public ActiveState(Philosopher philosopher) {
 		this.philospher = philospher;
-		this.drinkState = new NotThirsty();
-		this.foodState = new NotHungry();
+		this.switchDrinkState(new NotThirsty());
+		this.switchFoodState(new NotHungry());
 	}
 
 	public ActiveState() {
@@ -19,16 +21,22 @@ public class ActiveState extends PState {
 		return drinkState;
 	}
 
-	public void setDrinkState(DrinkState drinkState) {
-		this.drinkState = drinkState;
+	public void switchDrinkState(DrinkState nextState) {
+		if (this.drinkState != null)
+			this.drinkState.onExit();
+		this.drinkState = nextState;
+		this.drinkState.onStart();
 	}
 
 	public FoodState getFoodState() {
 		return foodState;
 	}
 
-	public void setFoodState(FoodState foodState) {
-		this.foodState = foodState;
+	public void switchFoodState(FoodState nextState) {
+		if (this.foodState != null)
+			this.foodState.onExit();
+		this.foodState = nextState;
+		this.foodState.onStart();
 	}
 
 	// ----------------------------------------------
@@ -42,19 +50,42 @@ public class ActiveState extends PState {
 
 	public class Hungry extends FoodState {
 
+		@Override
+		public void onStart() {
+			super.onStart();
+			Timer.setTimeOut(100, 800, () -> {
+				if (foodState == this)
+					switchFoodState(new NotHungry());
+			});
+			
+			Player left = philospher.getLeft();
+			while (!left.holdingChopstick()) {
+				
+			}
+			Player right = philospher.getRight();
+			while (!right.holdingChopstick()) {
+				
+			}
+			// while (left.isEating() || right.isEating()) {
+			//
+			// }
+
+
+
+		}
 	}
 
 	public class Eating extends FoodState {
 
 	}
-	
+
 	// ----------------------------------------------
 	public class DrinkState extends PState {
-		
+
 	}
-	
+
 	public class NotThirsty extends DrinkState {
-		
+
 	}
 
 	public class Thirsty extends FoodState {

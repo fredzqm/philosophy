@@ -15,7 +15,7 @@ public class DataMonitorTest  {
 	
 	@Test
 	public void getAndPut() {
-		SideMap map = new SideMap(ZOOKEEPER_ADDR, "/tea");
+		SideMap map = SideMap.getInstance();
 		
 		map.put("a", "data");
 		assertTrue(map.containsKey("a"));
@@ -24,10 +24,31 @@ public class DataMonitorTest  {
 	
 	@Test
 	public void getAndPut2() {
-		SideMap map = new SideMap(ZOOKEEPER_ADDR, "/tea");
+		SideMap map = SideMap.getInstance();
 		
 		map.put("xx", "yyy");
 		assertTrue(map.containsKey("xx"));
 		assertEquals("yyy", map.get("xx"));
+	}
+
+	
+	@Test
+	public void remove() {
+		SideMap map = SideMap.getInstance();
+		
+		map.put("xx", "yyy");
+		assertTrue(map.containsKey("xx"));
+		map.remove("xx");
+		assertFalse(map.containsKey("xx"));
+	}
+	
+	@Test
+	public void remove2() {
+		SideMap map = SideMap.getInstance();
+		
+		map.put("xx", "yyy");
+		assertTrue(map.containsKey("xx"));
+		map.remove("xx");
+		map.remove("xx");
 	}
 }
