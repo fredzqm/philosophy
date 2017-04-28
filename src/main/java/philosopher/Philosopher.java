@@ -12,6 +12,7 @@ import philosophyOld.IPFinder;
  */
 public class Philosopher {
 	public static boolean automatic = false;
+	public static boolean verbose = false;
 	private Player myself, left, right;
 	private String ip;
 	private PState state;
