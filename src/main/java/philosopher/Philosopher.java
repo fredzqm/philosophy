@@ -12,11 +12,13 @@ import philosophyOld.IPFinder;
  */
 public class Philosopher {
 	public static boolean automatic = false;
-	private Player ip, left, right;
+	private Player myself, left, right;
+	private String ip;
 	private PState state;
 	
 	public Philosopher(String ip, String left, String right) {
-		this.ip = new Player(ip);
+		this.ip = ip;
+		this.myself = new Player(ip);
 		this.left = new Player(left);
 		this.right = new Player(right);
 		this.switchTo(new ActiveState());
@@ -29,8 +31,12 @@ public class Philosopher {
 		this.state.onStart();
 	}
 
-	public Player getMyself() {
+	public String getIP() {
 		return ip;
+	}
+	
+	public Player getMyself() {
+		return myself;
 	}
 	
 	public Player getRight() {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import zookeeper.SideMap;
+
 public class ActiveState extends PState {
 	private Philosopher philospher;
 	private DrinkState drinkState;
@@ -80,7 +82,6 @@ public class ActiveState extends PState {
 			philospher.getMyself().hasOneChopstick();
 			while (!ls.get(1).holdingChopstick()) {
 			}
-			philospher.getMyself().startEating();
 			switchFoodState(new Eating());
 		}
 	}
@@ -90,6 +91,7 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
+			philospher.getMyself().startEating();
 			if (Philosopher.automatic) {
 				Timer.setTimeOut(100, 800, () -> {
 					if (Eating.this.active)
@@ -108,18 +110,37 @@ public class ActiveState extends PState {
 
 	// ----------------------------------------------
 	public class DrinkState extends PState {
-
+		
 	}
 
 	public class NotThirsty extends DrinkState {
-
+		
 	}
 
-	public class Thirsty extends FoodState {
+	public class Thirsty extends DrinkState {
 
+		@Override
+		public void onStart() {
+			super.onStart();
+			SideMap map = SideMap.getInstance();
+			while(map.containsKey("bottle")) {}
+			map.put("bottle", philospher.getIP());
+			switchDrinkState(new Drinking());
+		}
 	}
 
-	public class Drinking extends FoodState {
-
+	public class Drinking extends DrinkState {
+		
+		@Override
+		public void onStart() {
+			super.onStart();
+		}
+		
+		@Override
+		public void onExit() {
+			SideMap map = SideMap.getInstance();
+			map.remove("bottle");
+			super.onExit();
+		}
 	}
 }
