@@ -13,7 +13,7 @@ import zookeeper.SideMap;
  */
 public class Philosopher {
 	public static boolean automatic = false;
-	public static boolean verbose = false;
+	public static boolean verbose = true;
 	private Player myself, left, right;
 	private String ip;
 	private PState state;
