@@ -55,7 +55,7 @@ public class Philosopher {
 
 	public static void main(String[] args) throws UnknownHostException, SocketException {
 		String ip = IPFinder.getPublicIPv4();
-		System.out.println("IP is " + ip);
+		System.out.println("IP is " + ip+ " left "+ args[0] + " right " + args[1]);
 		Philosopher ph = new Philosopher(ip, args[0], args[1]);
 
 		@SuppressWarnings("resource")
