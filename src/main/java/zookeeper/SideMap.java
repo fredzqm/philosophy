@@ -85,4 +85,8 @@ public class SideMap implements Watcher {
 		}
 		return map;
 	}
+
+	public void addListener(String key, DataMonitorListener dataMonitorListener) {
+		new DataMonitor(this.zookeeper, getChildZnode(key), null, dataMonitorListener);
+	}
 }

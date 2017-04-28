@@ -1,5 +1,6 @@
 package zookeeper;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -50,5 +51,18 @@ public class DataMonitorTest  {
 		assertTrue(map.containsKey("uuuuu"));
 		map.remove("uuuuu");
 		map.remove("uuuuu");
+	}
+	
+	@Test
+	public void addListener() throws InterruptedException {
+		SideMap map = SideMap.getInstance();
+		
+		DataMonitorListener mock = mock(DataMonitorListener.class);
+		
+		map.put("data", "coolData");
+		map.addListener("data", mock);
+		Thread.sleep(100);
+		verify(mock).exists("coolData");
+		verify(mock, never()).closing(1);
 	}
 }
