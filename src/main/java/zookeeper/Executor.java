@@ -15,7 +15,7 @@ import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
-public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListener {
+public class Executor implements Watcher, Runnable, DataMonitorListener {
 	private String znode;
 	private DataMonitor dm;
 	private ZooKeeper zk;
