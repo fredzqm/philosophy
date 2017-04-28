@@ -34,8 +34,11 @@ public class SideMap implements Watcher {
 
 	public String get(String key) {
 		try {
-			byte[] data = this.zookeeper.getData(getChildZnode(key), false, null);
-			return new String(data);
+			if (this.containsKey(key)) {
+				byte[] data = this.zookeeper.getData(getChildZnode(key), false, null);
+				return new String(data);
+			}
+			return null;
 		} catch (InterruptedException | KeeperException e) {
 			throw new RuntimeException(e);
 		}

@@ -12,13 +12,9 @@ public class ActiveState extends PState {
 	private FoodState foodState;
 
 	public ActiveState(Philosopher philosopher) {
-		this.philospher = philospher;
+		this.philospher = philosopher;
 		this.switchDrinkState(new NotThirsty());
 		this.switchFoodState(new NotHungry());
-	}
-
-	public ActiveState() {
-
 	}
 
 	public DrinkState getDrinkState() {
@@ -55,7 +51,7 @@ public class ActiveState extends PState {
 			super.onStart();
 			if (Philosopher.automatic) {
 				Timer.setTimeOut(100, 800, () -> {
-					if (NotHungry.this.active)
+					if (NotHungry.this.active && ActiveState.this.active)
 						switchFoodState(new NotHungry());
 				});
 			}
@@ -69,7 +65,7 @@ public class ActiveState extends PState {
 			super.onStart();
 			if (Philosopher.automatic) {
 				Timer.setTimeOut(100, 800, () -> {
-					if (Hungry.this.active)
+					if (Hungry.this.active && ActiveState.this.active)
 						switchFoodState(new NotHungry());
 				});
 			}
@@ -94,7 +90,7 @@ public class ActiveState extends PState {
 			philospher.getMyself().startEating();
 			if (Philosopher.automatic) {
 				Timer.setTimeOut(100, 800, () -> {
-					if (Eating.this.active)
+					if (Eating.this.active && ActiveState.this.active)
 						switchFoodState(new NotHungry());
 				});
 			}
@@ -122,9 +118,8 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
-			SideMap map = SideMap.getInstance();
-			while(map.containsKey("bottle")) {}
-			map.put("bottle", philospher.getIP());
+			while(philospher.bottleOccupied()) {}
+			philospher.getTheBottle();
 			switchDrinkState(new Drinking());
 		}
 	}
@@ -138,8 +133,7 @@ public class ActiveState extends PState {
 		
 		@Override
 		public void onExit() {
-			SideMap map = SideMap.getInstance();
-			map.remove("bottle");
+			philospher.dropTheBottle();
 			super.onExit();
 		}
 	}

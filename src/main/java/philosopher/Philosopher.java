@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 import philosophyOld.IPFinder;
+import zookeeper.SideMap;
 
 /**
  * 
@@ -15,15 +16,15 @@ public class Philosopher {
 	private Player myself, left, right;
 	private String ip;
 	private PState state;
-	
+
 	public Philosopher(String ip, String left, String right) {
 		this.ip = ip;
 		this.myself = new Player(ip);
 		this.left = new Player(left);
 		this.right = new Player(right);
-		this.switchTo(new ActiveState());
+		this.switchTo(new ActiveState(this));
 	}
-	
+
 	public void switchTo(PState nextState) {
 		if (this.state != null)
 			this.state.onExit();
@@ -34,11 +35,11 @@ public class Philosopher {
 	public String getIP() {
 		return ip;
 	}
-	
+
 	public Player getMyself() {
 		return myself;
 	}
-	
+
 	public Player getRight() {
 		return right;
 	}
@@ -79,6 +80,20 @@ public class Philosopher {
 				break;
 			}
 		}
+	}
+
+	public boolean bottleOccupied() {
+		return SideMap.getInstance().containsKey("bottle");
+	}
+
+	public void getTheBottle() {
+		SideMap.getInstance().put("bottle", getIP());
+	}
+
+	public void dropTheBottle() {
+		SideMap map = SideMap.getInstance();
+		if (getIP().equals(map.get("bottle")))
+			map.remove("bottle");
 	}
 
 }
