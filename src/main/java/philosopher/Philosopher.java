@@ -78,6 +78,12 @@ public class Philosopher {
 			case "sleep":
 				ph.sleep();
 				break;
+			case "playLeft":
+				ph.play(true);
+				break;
+			case "playRight":
+				ph.play(false);
+				break;
 			default:
 				break;
 			}
@@ -86,6 +92,18 @@ public class Philosopher {
 
 	private void sleep() {
 		switchTo(new Sleep(this));
+	}
+
+	private void play(boolean isLeft){
+		Player p = null;
+		if (isLeft){
+			p = this.left;
+		}else{
+			p = this.right;
+		}
+		while(!p.isActive()){
+		}
+		switchTo(new Play(this, p.getIP()));
 	}
 
 	private void thirsty() {

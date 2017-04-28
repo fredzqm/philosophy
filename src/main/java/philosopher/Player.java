@@ -36,8 +36,12 @@ public class Player implements Comparable<Player> {
 		this.zkmap.remove(getEastPath());
 	}
 
+	public boolean isActive() {
+		return SideMap.getInstance().containsKey(this.ip + "active");
+	}
+
 	private String getEastPath() {
 		return ip + "eating";
 	}
-	
+
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import zookeeper.SideMap;
+
 public class ActiveState extends PState {
 	private Philosopher philospher;
 	private DrinkState drinkState;
@@ -18,6 +20,7 @@ public class ActiveState extends PState {
 	@Override
 	public void onStart() {
 		super.onStart();
+		SideMap.getInstance().put(philospher.getIP()+"active", "-");
 		this.drinkState.onStart();
 		this.foodState.onStart();
 	}
