@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import zookeeper.SideMap;
-
 public class ActiveState extends PState {
 	private Philosopher philospher;
 	private DrinkState drinkState;
 	private FoodState foodState;
 
-	public ActiveState(Philosopher philosopher) {
-		this.philospher = philosopher;
+	public ActiveState(Philosopher philospher) {
+		this.philospher = philospher;
 		this.switchDrinkState(new NotThirsty());
 		this.switchFoodState(new NotHungry());
 	}
@@ -42,6 +40,11 @@ public class ActiveState extends PState {
 	// ----------------------------------------------
 	public class FoodState extends PState {
 
+		public void speak(String message) {
+			if (Philosopher.verbose)
+				System.out.println(message);
+		}
+
 	}
 
 	public class NotHungry extends FoodState {
@@ -49,6 +52,7 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
+			super.speak("Not hungry");
 			if (Philosopher.automatic) {
 				Timer.setTimeOut(100, 800, () -> {
 					if (NotHungry.this.active && ActiveState.this.active)
@@ -63,6 +67,7 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
+			super.speak("Hungry");
 			if (Philosopher.automatic) {
 				Timer.setTimeOut(100, 800, () -> {
 					if (Hungry.this.active && ActiveState.this.active)
@@ -87,6 +92,7 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
+			super.speak("Eating");
 			philospher.getMyself().startEating();
 			if (Philosopher.automatic) {
 				Timer.setTimeOut(100, 800, () -> {
@@ -106,10 +112,24 @@ public class ActiveState extends PState {
 
 	// ----------------------------------------------
 	public class DrinkState extends PState {
-		
+		public void speak(String message) {
+			if (Philosopher.verbose)
+				System.out.println(message);
+		}
 	}
 
 	public class NotThirsty extends DrinkState {
+		@Override
+		public void onStart() {
+			super.onStart();
+			super.speak("Not thristy");
+			if (Philosopher.automatic) {
+				Timer.setTimeOut(100, 800, () -> {
+					if (NotThirsty.this.active)
+						switchDrinkState(new Thirsty());
+				});
+			}
+		}
 		
 	}
 
@@ -118,6 +138,8 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
+			super.speak("Thirsty");
+			
 			while(philospher.bottleOccupied()) {}
 			philospher.getTheBottle();
 			switchDrinkState(new Drinking());
@@ -129,6 +151,13 @@ public class ActiveState extends PState {
 		@Override
 		public void onStart() {
 			super.onStart();
+			super.speak("Drinking");
+			if (Philosopher.automatic) {
+				Timer.setTimeOut(100, 800, () -> {
+					if (Drinking.this.active)
+						switchDrinkState(new NotThirsty());
+				});
+			}
 		}
 		
 		@Override
