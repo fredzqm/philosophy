@@ -59,28 +59,61 @@ public class Philosopher {
 		while (true) {
 			String input = in.nextLine();
 			switch (input) {
-			case "thinking":
-				// foodManager.setFoodState(foodManager.new Thinking());
-				// drinkManager.setDrinkState(drinkManager.new NotThirsty());
+			case "nhungry":
+				ph.notHungry();
 				break;
 			case "hungry":
-				// foodManager.setFoodState(foodManager.new Hungry());
+				ph.hungry();
 				break;
 			case "thirsty":
-				// drinkManager.setDrinkState(drinkManager.new Thirsty());
+				ph.thirsty();
 				break;
-			case "notThirsty":
-				// drinkManager.setDrinkState(drinkManager.new NotThirsty());
+			case "nthirsty":
+				ph.notThirsty();
 				break;
 			case "sleep":
-				// drinkManager.setDrinkState(drinkManager.new Sleep());
+				ph.sleep();
 				break;
 			default:
-				// System.out.println("Revieved event: " + input + " current
-				// state: " + drinkManager.getDrinkState());
 				break;
 			}
 		}
+	}
+
+	private void sleep() {
+		switchTo(new Sleep(this));
+	}
+
+	private void thirsty() {
+		if (!(this.state instanceof ActiveState)) {
+			this.switchTo(new ActiveState(this));
+		}
+		ActiveState x = (ActiveState) this.state;
+		x.switchDrinkState(x.new Thirsty());
+	}
+
+	private void notThirsty() {
+		if (!(this.state instanceof ActiveState)) {
+			this.switchTo(new ActiveState(this));
+		}
+		ActiveState x = (ActiveState) this.state;
+		x.switchDrinkState(x.new NotThirsty());
+	}
+
+	private void notHungry() {
+		if (!(this.state instanceof ActiveState)) {
+			this.switchTo(new ActiveState(this));
+		}
+		ActiveState x = (ActiveState) this.state;
+		x.switchFoodState(x.new NotHungry());
+	}
+
+	private void hungry() {
+		if (!(this.state instanceof ActiveState)) {
+			this.switchTo(new ActiveState(this));
+		}
+		ActiveState x = (ActiveState) this.state;
+		x.switchFoodState(x.new Hungry());
 	}
 
 	public boolean bottleOccupied() {
@@ -96,6 +129,5 @@ public class Philosopher {
 		if (getIP().equals(map.get("bottle")))
 			map.remove("bottle");
 	}
-
 
 }

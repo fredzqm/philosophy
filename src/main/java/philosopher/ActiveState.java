@@ -15,6 +15,20 @@ public class ActiveState extends PState {
 		this.switchFoodState(new NotHungry());
 	}
 
+	@Override
+	public void onStart() {
+		super.onStart();
+		this.drinkState.onStart();
+		this.foodState.onStart();
+	}
+
+	@Override
+	public void onExit() {
+		this.drinkState.onExit();
+		this.foodState.onExit();
+		super.onExit();
+	}
+
 	public DrinkState getDrinkState() {
 		return drinkState;
 	}
@@ -130,7 +144,7 @@ public class ActiveState extends PState {
 				});
 			}
 		}
-		
+
 	}
 
 	public class Thirsty extends DrinkState {
@@ -139,15 +153,16 @@ public class ActiveState extends PState {
 		public void onStart() {
 			super.onStart();
 			super.speak("Thirsty");
-			
-			while(philospher.bottleOccupied()) {}
+
+			while (philospher.bottleOccupied()) {
+			}
 			philospher.getTheBottle();
 			switchDrinkState(new Drinking());
 		}
 	}
 
 	public class Drinking extends DrinkState {
-		
+
 		@Override
 		public void onStart() {
 			super.onStart();
@@ -159,7 +174,7 @@ public class ActiveState extends PState {
 				});
 			}
 		}
-		
+
 		@Override
 		public void onExit() {
 			philospher.dropTheBottle();
