@@ -36,19 +36,19 @@ public class DataMonitorTest  {
 	public void remove() {
 		SideMap map = SideMap.getInstance();
 		
-		map.put("xx", "yyy");
-		assertTrue(map.containsKey("xx"));
-		map.remove("xx");
-		assertFalse(map.containsKey("xx"));
+		map.put("uuuuu", "yyy");
+		assertTrue(map.containsKey("uuuuu"));
+		map.remove("uuuuu");
+		assertFalse(map.containsKey("uuuuu"));
 	}
 	
 	@Test
 	public void remove2() {
 		SideMap map = SideMap.getInstance();
 		
-		map.put("xx", "yyy");
-		assertTrue(map.containsKey("xx"));
-		map.remove("xx");
-		map.remove("xx");
+		map.put("uuuuu", "yyy");
+		assertTrue(map.containsKey("uuuuu"));
+		map.remove("uuuuu");
+		map.remove("uuuuu");
 	}
 }

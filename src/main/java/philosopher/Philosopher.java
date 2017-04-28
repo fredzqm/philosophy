@@ -4,7 +4,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-import philosophyOld.IPFinder;
+import zookeeper.IPFinder;
 import zookeeper.SideMap;
 
 /**
@@ -95,5 +95,6 @@ public class Philosopher {
 		if (getIP().equals(map.get("bottle")))
 			map.remove("bottle");
 	}
+
 
 }

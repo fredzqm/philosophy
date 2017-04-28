@@ -10,7 +10,7 @@ import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 
 public class SideMap implements Watcher {
-	private static final String ZOOKEEPER_ADDR = "localhost:2181";
+	private static final String ZOOKEEPER_ADDR = "137.112.89.141:2181";
 	private static SideMap map;
 
 	private ZooKeeper zookeeper;
