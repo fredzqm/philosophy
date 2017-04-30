@@ -30,28 +30,15 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
 	 */
 	public static void main(String[] args) {
 		String hostPort = SideMap.ZOOKEEPER_ADDR;
-		String znode = "play137.112.232.28137.112.232.18";
-		SideMap map = SideMap.getInstance();
-		map.addListener(znode, new DataMonitorListener() {
-			@Override
-			public void exists(String data) {
-				System.out.println(data);
-			}
+		String znode = "/play137.112.232.28137.112.232.18";
+		
+		try {
+			new Executor(hostPort, znode).run();
 
-			@Override
-			public void closing(int rc) {
-				System.out.println(rc);
-			}
-		});
-		while (true)
-			;
-		// try {
-		// new Executor(hostPort, znode).run();
-		//
-		// System.out.priDataMonitorListenerntln("End of program");
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
+			System.out.println("End of program");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/***************************************************************************

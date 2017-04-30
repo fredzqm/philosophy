@@ -1,7 +1,12 @@
 package zookeeper;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +67,59 @@ public class DataMonitorTest  {
 		map.put("data", "coolData");
 		map.addListener("data", mock);
 		Thread.sleep(100);
+		verify(mock).exists("coolData");
+		verify(mock, never()).closing(1);
+	}
+	
+	
+	@Test
+	public void addListenerMultiple() throws InterruptedException {
+		SideMap map = SideMap.getInstance();
+		
+		map.remove("data");
+		
+		DataMonitorListener mock = mock(DataMonitorListener.class);
+		map.addListener("data", mock);
+		
+		map.put("data", "coolData");
+		map.put("data", "coolData2");
+		Thread.sleep(100);
+		verify(mock).exists("coolData");
+		verify(mock).exists("coolData2");
+		verify(mock, never()).closing(1);
+	}
+	
+	@Test
+	public void addListenerMultipleSame() throws InterruptedException {
+		SideMap map = SideMap.getInstance();
+
+		map.remove("data");
+		
+		DataMonitorListener mock = mock(DataMonitorListener.class);
+		map.addListener("data", mock);
+		
+		map.put("data", "coolData");
+		map.put("data", "coolData");
+		Thread.sleep(100);
+		verify(mock, times(2)).exists("coolData");
+		verify(mock, never()).closing(1);
+	}
+	
+	@Test
+	public void testRemoveListener() throws InterruptedException {
+		SideMap map = SideMap.getInstance();
+
+		map.remove("data");
+		
+		DataMonitorListener mock = mock(DataMonitorListener.class);
+		map.addListener("data", mock);
+		
+		map.put("data", "coolData");
+		map.removeListener(mock);
+		map.put("data", "coolData");
+		
+		Thread.sleep(100);
+		
 		verify(mock).exists("coolData");
 		verify(mock, never()).closing(1);
 	}

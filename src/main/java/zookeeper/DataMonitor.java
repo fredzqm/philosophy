@@ -15,10 +15,16 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 
 public class DataMonitor implements Watcher, StatCallback {
-	private ZooKeeper zk;
-	private String znode;
-	private Watcher chainedWatcher;
-	private DataMonitorListener listener;
+
+	ZooKeeper zk;
+
+	String znode;
+
+	Watcher chainedWatcher;
+
+	boolean dead;
+
+	DataMonitorListener listener;
 
 	byte prevData[];
 
@@ -27,6 +33,8 @@ public class DataMonitor implements Watcher, StatCallback {
 		this.znode = znode;
 		this.chainedWatcher = chainedWatcher;
 		this.listener = listener;
+		// Get things started by checking if the node exists. We are going
+		// to be completely event driven
 		zk.exists(znode, true, this, null);
 	}
 
@@ -44,6 +52,7 @@ public class DataMonitor implements Watcher, StatCallback {
 				break;
 			case Expired:
 				// It's all over
+				dead = true;
 				listener.closing(KeeperException.Code.SessionExpired);
 				break;
 			}
@@ -69,6 +78,7 @@ public class DataMonitor implements Watcher, StatCallback {
 			break;
 		case Code.SessionExpired:
 		case Code.NoAuth:
+			dead = true;
 			listener.closing(rc);
 			return;
 		default:
@@ -89,11 +99,6 @@ public class DataMonitor implements Watcher, StatCallback {
 				return;
 			}
 		}
-		// if ((b == null && b != prevData) || (b != null &&
-		// !Arrays.equals(prevData, b))) {
-		if (b != null)
-			listener.exists(new String(b));
-		// prevData = b;
-		// }
+		listener.exists(new String(b));
 	}
 }

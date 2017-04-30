@@ -1,6 +1,8 @@
 package zookeeper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -12,8 +14,8 @@ import org.apache.zookeeper.ZooKeeper;
 public class SideMap implements Watcher {
 	static final String ZOOKEEPER_ADDR = "137.112.89.141:2181";
 	private static SideMap map;
-
 	private ZooKeeper zookeeper;
+	private Map<DataMonitorListener, DataMonitor> listeners;
 
 	private SideMap(String connectStr) {
 		try {
@@ -21,6 +23,7 @@ public class SideMap implements Watcher {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		listeners = new HashMap<>();
 		this.put("", "-");
 	}
 
@@ -73,6 +76,9 @@ public class SideMap implements Watcher {
 	@Override
 	public void process(WatchedEvent event) {
 		System.out.println("event: " + event);
+		for (DataMonitor m : this.listeners.values()) {
+			m.process(event);
+		}
 	}
 
 	public static SideMap getInstance() {
@@ -87,6 +93,11 @@ public class SideMap implements Watcher {
 	}
 
 	public void addListener(String key, DataMonitorListener dataMonitorListener) {
-		new DataMonitor(this.zookeeper, getChildZnode(key), null, dataMonitorListener);
+		listeners.put(dataMonitorListener,
+				new DataMonitor(this.zookeeper, getChildZnode(key), null, dataMonitorListener));
+	}
+
+	public void removeListener(DataMonitorListener dataMonitorListener) {
+		listeners.remove(dataMonitorListener);
 	}
 }
