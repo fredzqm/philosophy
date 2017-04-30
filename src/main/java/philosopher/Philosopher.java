@@ -47,10 +47,12 @@ public class Philosopher {
 
 		public GameListener(String url) {
 			this.url = url;
+			map.remove(url);
 		}
 
 		@Override
 		public void exists(String data) {
+			System.out.println("url " + data);
 			switch (data) {
 			case REQUEST:
 				setPlayRequest(url);
