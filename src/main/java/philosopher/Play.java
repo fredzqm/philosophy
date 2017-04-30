@@ -20,6 +20,7 @@ public class Play extends PState {
 	@Override
 	public void onExit(){
 		super.onExit();
+		ph.setPlayRequest(null);
 		SideMap.getInstance().put(url, Philosopher.END);
 	}
 
@@ -27,7 +28,6 @@ public class Play extends PState {
 		if (Philosopher.verbose){
 			System.out.println("Playing");
 		}
-		
 		if (Philosopher.automatic){
 			Timer.setTimeOut(100, 800, () -> {
 				ph.switchTo(new ActiveState(ph));

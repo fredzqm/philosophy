@@ -15,8 +15,6 @@ public class ActiveState extends PState {
 		this.philospher = philospher;
 		this.drinkState = new NotThirsty();
 		this.foodState = new NotHungry();
-//		this.switchDrinkState(new NotThirsty());
-//		this.switchFoodState(new NotHungry());
 	}
 
 	@Override
