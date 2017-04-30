@@ -71,6 +71,10 @@ public class Philosopher {
 					switchTo(new ActiveState(Philosopher.this));
 				break;
 			default:
+				if (state instanceof Play) {
+					Play p = (Play) state;
+					p.getMessage(data);
+				}
 				break;
 			}
 		}
@@ -165,6 +169,10 @@ public class Philosopher {
 				ph.requestPlay(false);
 				break;
 			default:
+				if (ph.state instanceof Play) {
+					Play p = (Play) ph.state;
+					p.getInput(input);
+				}
 				break;
 			}
 		}

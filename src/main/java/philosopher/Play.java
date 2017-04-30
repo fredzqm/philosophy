@@ -44,4 +44,12 @@ public class Play extends PState {
 		}
 		return playString;
 	}
+
+	public void getInput(String input) {
+		SideMap.getInstance().put(url, input);
+	}
+
+	public void getMessage(String data) {
+		System.out.println("Recieved messaged: "+ data);
+	}
 }
