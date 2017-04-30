@@ -99,6 +99,9 @@ public class DataMonitor implements Watcher, StatCallback {
 				return;
 			}
 		}
-		listener.exists(new String(b));
+		if ((b == null && b != prevData) || (b != null && !Arrays.equals(prevData, b))) {
+			listener.exists(new String(b));
+			prevData = b;
+		}
 	}
 }

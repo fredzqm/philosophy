@@ -67,7 +67,8 @@ public class Philosopher {
 					switchTo(new Play(Philosopher.this, url));
 				break;
 			case END:
-				switchTo(new ActiveState(Philosopher.this));
+				if (state instanceof Play)
+					switchTo(new ActiveState(Philosopher.this));
 				break;
 			default:
 				break;

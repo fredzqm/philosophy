@@ -77,11 +77,11 @@ public class DataMonitorTest  {
 		SideMap map = SideMap.getInstance();
 		
 		map.remove("data");
-		
 		DataMonitorListener mock = mock(DataMonitorListener.class);
 		map.addListener("data", mock);
 		
 		map.put("data", "coolData");
+		Thread.sleep(100);
 		map.put("data", "coolData2");
 		Thread.sleep(100);
 		verify(mock).exists("coolData");
@@ -101,7 +101,7 @@ public class DataMonitorTest  {
 		map.put("data", "coolData");
 		map.put("data", "coolData");
 		Thread.sleep(100);
-		verify(mock, times(2)).exists("coolData");
+		verify(mock).exists("coolData");
 		verify(mock, never()).closing(1);
 	}
 	
@@ -116,11 +116,31 @@ public class DataMonitorTest  {
 		
 		map.put("data", "coolData");
 		map.removeListener(mock);
-		map.put("data", "coolData");
+		map.put("data", "coolData2");
 		
 		Thread.sleep(100);
 		
 		verify(mock).exists("coolData");
+		verify(mock, never()).closing(1);
+	}
+	
+	@Test
+	public void testListenerChange() throws InterruptedException {
+		SideMap map = SideMap.getInstance();
+
+		map.remove("data");
+		
+		DataMonitorListener mock = mock(DataMonitorListener.class);
+		map.addListener("data", mock);
+		
+		map.put("data", "coolData");
+		map.put("data", "coolData2");
+		map.put("data", "coolData");
+		
+		Thread.sleep(100);
+		
+		verify(mock, times(2)).exists("coolData");
+		verify(mock).exists("coolData2");
 		verify(mock, never()).closing(1);
 	}
 }
