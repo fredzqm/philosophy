@@ -31,7 +31,7 @@ public class Philosopher {
 		this.myself = new Player(ip);
 		this.left = new Player(left);
 		this.right = new Player(right);
-		this.dropTheBottle();
+		SideMap.getInstance().remove("bottle");
 		this.getMyself().finishEating();
 		this.map = SideMap.getInstance();
 
@@ -141,7 +141,8 @@ public class Philosopher {
 
 		// need to remove all element in zookeeper when restart
 		Philosopher ph = new Philosopher(ip, args[0], args[1]);
-
+		
+		
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		while (true) {
