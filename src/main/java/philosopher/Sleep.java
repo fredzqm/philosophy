@@ -9,8 +9,6 @@ public class Sleep extends PState {
 	
 	@Override
 	public void onStart() {
-		this.philosopher.getMyself().finishEating();
-		this.philosopher.dropTheBottle();
 		super.onStart();
 	}
 	

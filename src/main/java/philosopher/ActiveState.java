@@ -20,7 +20,9 @@ public class ActiveState extends PState {
 	@Override
 	public void onStart() {
 		super.onStart();
-		SideMap.getInstance().put(philospher.getIP()+"active", "-");
+		if (this.philospher.getPlayRequest() != null) {
+			this.philospher.swithToPlayState();
+		}
 		this.drinkState.onStart();
 		this.foodState.onStart();
 	}
@@ -29,6 +31,8 @@ public class ActiveState extends PState {
 	public void onExit() {
 		this.drinkState.onExit();
 		this.foodState.onExit();
+		this.philospher.getMyself().finishEating();
+		this.philospher.dropTheBottle();
 		super.onExit();
 	}
 

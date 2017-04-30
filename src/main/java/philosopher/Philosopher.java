@@ -4,6 +4,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import zookeeper.DataMonitorListener;
 import zookeeper.IPFinder;
 import zookeeper.SideMap;
 
@@ -14,20 +15,79 @@ import zookeeper.SideMap;
 public class Philosopher {
 	public static boolean automatic = false;
 	public static boolean verbose = true;
+
+	private static final String READY = "Ready";
+	private static final String REQUEST = "Request";
+	public static final String END = "End";
+
 	private Player myself, left, right;
 	private String ip;
 	private PState state;
+	private SideMap map;
+	private String playRequest;
 
 	public Philosopher(String ip, String left, String right) {
 		this.ip = ip;
 		this.myself = new Player(ip);
 		this.left = new Player(left);
 		this.right = new Player(right);
-		
 		this.dropTheBottle();
 		this.getMyself().finishEating();
-		
+		this.map = SideMap.getInstance();
+
+		String leftStr = this.getPlayString(left);
+		this.map.addListener(leftStr, new GameListener(leftStr));
+		String rightStr = this.getPlayString(right);
+		this.map.addListener(rightStr, new GameListener(rightStr));
 		this.switchTo(new ActiveState(this));
+	}
+
+	class GameListener implements DataMonitorListener {
+		private String url;
+
+		public GameListener(String url) {
+			this.url = url;
+		}
+
+		@Override
+		public void exists(String data) {
+			switch (data) {
+			case REQUEST:
+				setPlayRequest(url);
+				if (Philosopher.this.state instanceof ActiveState) {
+					swithToPlayState();
+				}
+				break;
+			case READY:
+				switchTo(new Play(Philosopher.this, url));
+				break;
+			case END:
+				switchTo(new ActiveState(Philosopher.this));
+				break;
+			default:
+				break;
+			}
+		}
+
+		@Override
+		public void closing(int rc) {
+			throw new RuntimeException();
+		}
+
+	}
+
+	private void requestPlay(boolean isLeft) {
+		if (isLeft) {
+			this.map.put(getPlayString(getLeft().getIP()), REQUEST);
+		} else {
+			this.map.put(getPlayString(getRight().getIP()), REQUEST);
+		}
+		switchTo(new WaitToPlay());
+	}
+
+	public void swithToPlayState() {
+		this.map.put(playRequest, READY);
+		Philosopher.this.switchTo(new Play(this, playRequest));
 	}
 
 	public void switchTo(PState nextState) {
@@ -35,6 +95,14 @@ public class Philosopher {
 			this.state.onExit();
 		this.state = nextState;
 		this.state.onStart();
+	}
+
+	public String getPlayRequest() {
+		return playRequest;
+	}
+
+	public void setPlayRequest(String playRequest) {
+		this.playRequest = playRequest;
 	}
 
 	public String getIP() {
@@ -53,9 +121,15 @@ public class Philosopher {
 		return left;
 	}
 
+	public PState getState() {
+		return state;
+	}
+
 	public static void main(String[] args) throws UnknownHostException, SocketException {
 		String ip = IPFinder.getPublicIPv4();
-		System.out.println("IP is " + ip+ " left "+ args[0] + " right " + args[1]);
+		System.out.println("IP is " + ip + " left " + args[0] + " right " + args[1]);
+
+		// need to remove all element in zookeeper when restart
 		Philosopher ph = new Philosopher(ip, args[0], args[1]);
 
 		@SuppressWarnings("resource")
@@ -79,10 +153,10 @@ public class Philosopher {
 				ph.sleep();
 				break;
 			case "playLeft":
-				ph.play(true);
+				ph.requestPlay(true);
 				break;
 			case "playRight":
-				ph.play(false);
+				ph.requestPlay(false);
 				break;
 			default:
 				break;
@@ -92,18 +166,6 @@ public class Philosopher {
 
 	private void sleep() {
 		switchTo(new Sleep(this));
-	}
-
-	private void play(boolean isLeft){
-		Player p = null;
-		if (isLeft){
-			p = this.left;
-		}else{
-			p = this.right;
-		}
-		while(!p.isActive()){
-		}
-		switchTo(new Play(this, p.getIP()));
 	}
 
 	private void thirsty() {
@@ -150,6 +212,16 @@ public class Philosopher {
 		SideMap map = SideMap.getInstance();
 		if (getIP().equals(map.get("bottle")))
 			map.remove("bottle");
+	}
+
+	private String getPlayString(String neighbor) {
+		String playString = null;
+		if (ip.compareTo(neighbor) > 0) {
+			playString = "play" + ip + neighbor;
+		} else {
+			playString = "play" + neighbor + ip;
+		}
+		return playString;
 	}
 
 }

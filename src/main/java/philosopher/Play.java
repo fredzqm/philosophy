@@ -4,21 +4,30 @@ import zookeeper.SideMap;
 
 public class Play extends PState {
 	private Philosopher ph;
-	private String neighbor;
+	private String url;
 
 	public Play(Philosopher ph, String neighbor) {
 		this.ph = ph;
-		this.neighbor = neighbor;
+		this.url = neighbor;
 	}
 
 	@Override
 	public void onStart() {
-		this.ph.getMyself().finishEating();
-		this.ph.dropTheBottle();
+		super.onStart();
+		this.play();
+	}
+	
+	@Override
+	public void onExit(){
+		super.onExit();
+		SideMap.getInstance().put(url, Philosopher.END);
+	}
+
+	public void play() {
 		if (Philosopher.verbose){
 			System.out.println("Playing");
 		}
-		super.onStart();
+		
 		if (Philosopher.automatic){
 			Timer.setTimeOut(100, 800, () -> {
 				ph.switchTo(new ActiveState(ph));
@@ -26,16 +35,12 @@ public class Play extends PState {
 		}
 	}
 
-	public void play() {
-		SideMap.getInstance().put(getPlayString(), "-");
-	}
-
 	public String getPlayString() {
 		String playString = null;
-		if (ph.getIP().compareTo(neighbor) > 0) {
-			playString = "play" + ph.getIP() + neighbor;
+		if (ph.getIP().compareTo(url) > 0) {
+			playString = "play" + ph.getIP() + url;
 		} else {
-			playString = "play" + neighbor + ph.getIP();
+			playString = "play" + url + ph.getIP();
 		}
 		return playString;
 	}
