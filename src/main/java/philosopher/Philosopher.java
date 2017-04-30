@@ -36,8 +36,10 @@ public class Philosopher {
 		this.map = SideMap.getInstance();
 
 		String leftStr = this.getPlayString(left);
+		this.map.remove(leftStr);
 		this.map.addListener(leftStr, new GameListener(leftStr));
 		String rightStr = this.getPlayString(right);
+		this.map.remove(rightStr);
 		this.map.addListener(rightStr, new GameListener(rightStr));
 		this.switchTo(new ActiveState(this));
 	}
@@ -46,8 +48,8 @@ public class Philosopher {
 		private String url;
 
 		public GameListener(String url) {
+			System.out.println(url);
 			this.url = url;
-			map.remove(url);
 		}
 
 		@Override

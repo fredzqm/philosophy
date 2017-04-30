@@ -1,6 +1,5 @@
 package zookeeper;
 
-
 /**
  * A simple class that monitors the data and existence of a ZooKeeper
  * node. It uses asynchronous ZooKeeper APIs.
@@ -90,9 +89,11 @@ public class DataMonitor implements Watcher, StatCallback {
 				return;
 			}
 		}
-		if ((b == null && b != prevData) || (b != null && !Arrays.equals(prevData, b))) {
+		// if ((b == null && b != prevData) || (b != null &&
+		// !Arrays.equals(prevData, b))) {
+		if (b != null)
 			listener.exists(new String(b));
-			prevData = b;
-		}
+		// prevData = b;
+		// }
 	}
 }

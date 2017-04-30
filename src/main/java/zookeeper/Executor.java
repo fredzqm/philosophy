@@ -23,27 +23,35 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
 	public Executor(String hostPort, String znode) throws KeeperException, IOException {
 		zk = new ZooKeeper(hostPort, 2181, this);
 		dm = new DataMonitor(zk, znode, null, this);
-
-		try {
-			zk.setData("/test", "ahfuiewarf".getBytes(), zk.exists("/test", true).getVersion());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String hostPort = "127.0.0.1:2181";
-		String znode = "/test";
-		try {
-			new Executor(hostPort, znode).run();
+		String hostPort = SideMap.ZOOKEEPER_ADDR;
+		String znode = "play137.112.232.28137.112.232.18";
+		SideMap map = SideMap.getInstance();
+		map.addListener(znode, new DataMonitorListener() {
+			@Override
+			public void exists(String data) {
+				System.out.println(data);
+			}
 
-			System.out.println("End of program");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			@Override
+			public void closing(int rc) {
+				System.out.println(rc);
+			}
+		});
+		while (true)
+			;
+		// try {
+		// new Executor(hostPort, znode).run();
+		//
+		// System.out.priDataMonitorListenerntln("End of program");
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	/***************************************************************************
