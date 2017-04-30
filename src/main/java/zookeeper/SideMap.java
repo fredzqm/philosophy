@@ -75,7 +75,6 @@ public class SideMap implements Watcher {
 
 	@Override
 	public void process(WatchedEvent event) {
-		System.out.println("event: " + event);
 		for (DataMonitor m : this.listeners.values()) {
 			m.process(event);
 		}
