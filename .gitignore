@@ -52,7 +52,6 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
-target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
